@@ -43,6 +43,16 @@
           Add Book</router-link
         >
       </li>
+      <li class="nav-item">
+        <router-link
+          to="/book-page"
+          active-class="active"
+          class="nav-link d-flex align-items-center text-dark"
+        >
+          <i class="bx bx-book-add me-2 p-2"></i>
+          BOOK</router-link
+        >
+      </li>
     </ul>
 
     <hr />

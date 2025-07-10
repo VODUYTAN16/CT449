@@ -26,15 +26,24 @@
     </div>
 
     <div class="row gx-5 inf-bot px-5">
-      <div class="col-12 text-center ms-5">
+      <div class="col-12 d-flex flex-column align-items-center ms-5">
         <button
           class="btn bg-success text-white mt-3"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#exampleModal"
-          style="z-index: 10; position: relative"
+          style="z-index: 10; position: relative; max-width: fit-content"
         >
           Borrow Book
+        </button>
+        <button
+          class="btn bg-success text-white mt-3"
+          type="button"
+          data-bs-toggle="modal"
+          data-bs-target="#bookcontent"
+          style="z-index: 10; position: relative; max-width: fit-content"
+        >
+          <i class="bx bx-reading"></i> Read Book
         </button>
       </div>
       <!-- Description -->
@@ -153,11 +162,13 @@
         </div>
       </div>
     </div>
+    <BookPage :book="book"></BookPage>
   </main>
 </template>
 <script setup>
 import { reactive, ref, onMounted } from 'vue';
 import { useRoute, onBeforeRouteUpdate } from 'vue-router';
+import BookPage from './BookPage.vue';
 import api from '../axios.js';
 
 // // Data
@@ -219,8 +230,8 @@ const book = ref({
 });
 
 const _fetch_Book = async (masach) => {
-  const response = await api.get('/api/get_sach/' + masach);
-  return response.data;
+  const response = await api.get('/api/docgia/books/search?masach=' + masach);
+  return response.data[0];
 };
 
 onMounted(async () => {
@@ -228,10 +239,10 @@ onMounted(async () => {
   book.value = await _fetch_Book(masach);
   console.log(book.value);
 
-  api.get('api/staff').then((response) => {
-    staffList.value = response.data;
-    console.log(staffList.value);
-  });
+  // api.get('api/staff').then((response) => {
+  //   staffList.value = response.data;
+  //   console.log(staffList.value);
+  // });
 });
 </script>
 

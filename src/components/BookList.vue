@@ -48,7 +48,7 @@ const props = defineProps({
 // )
 </script>
 
-<style>
+<style scoped>
 .book {
   transition:
     transform 0.3s,

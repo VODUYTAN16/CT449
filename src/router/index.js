@@ -5,7 +5,7 @@ import Category from '@/components/Category.vue';
 import Borrowed from '@/components/Borrowed.vue';
 import BookDetail from '@/components/BookDetail.vue';
 import AddBook from '@/components/AddBook.vue';
-
+import BookPage from '@/components/BookPage.vue';
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -26,6 +26,10 @@ const router = createRouter({
     {
       path: '/add-book',
       component: AddBook,
+    },
+    {
+      path: '/book-page',
+      component: BookPage,
     },
     {
       path: '/bookdetail/:masach', // Chúng ta sẽ truyền tham số fileId
