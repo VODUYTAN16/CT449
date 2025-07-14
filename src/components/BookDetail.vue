@@ -1,6 +1,13 @@
 <template>
   <main class="bookdetail">
-    <router-link to="/" class="back-btn fs-2">
+    <div style="z-index: 1; position: relative">
+      <LeafFall></LeafFall>
+    </div>
+    <router-link
+      to="/"
+      class="back-btn fs-2"
+      style="z-index: 5; position: relative"
+    >
       <i
         class="fa-solid fa-arrow-left bg-white mx-4 px-3 py-1 rounded-pill"
         style=""
@@ -188,6 +195,7 @@
 import { reactive, ref, onMounted } from 'vue';
 import { useRoute, onBeforeRouteUpdate } from 'vue-router';
 import BookPage from './BookPage.vue';
+import LeafFall from './LeafFall.vue';
 import { _fetch_Book_Detail, _borrow_book } from '../service/service';
 import api from '../axios.js';
 
@@ -292,10 +300,11 @@ onMounted(async () => {
   left: 35%;
   transform: translate(-25%, -10%);
 
-  z-index: 2;
+  z-index: 3;
 }
 
 .inf-bot {
+  z-index: 2;
   background-color: var(--white);
   margin: 0;
   position: absolute;

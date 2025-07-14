@@ -273,6 +273,7 @@ const toggleForm = () => {
 <style scoped>
 .auth-container {
   margin: auto;
+  overflow: hidden;
   height: 100vh;
   background-color: #fff2cc !important;
 }
