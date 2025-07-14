@@ -16,13 +16,19 @@
                 <img :src="book.anhbia" alt="" />
               </div>
             </div>
-            <div class="cover cover-right turn"></div>
+            <div class="cover cover-right turn">
+              <div class="page-cover">
+                <img src="../assets/back_cover.png" alt="" />
+              </div>
+            </div>
 
             <div class="book markdown-content">
               <!-- profile page -->
 
               <div class="book-page page-right">
-                <div class="page-front"></div>
+                <div class="page-front">
+                  <img src="../assets/back_cover.png" alt="" />
+                </div>
                 <div class="page-back bg-light py-5" style="overflow: hidden">
                   <div class="container text-center">
                     <!-- Biểu tượng hoặc logo nhỏ -->
@@ -242,14 +248,16 @@
   transform: rotateY(180deg) translateZ(1px);
 }
 
-.page-cover img {
+.page-cover img,
+.page-front img {
   width: 100%;
   height: 100%;
   object-fit: contain; /* không cắt, không biến dạng */
   object-position: center; /* căn giữa */
   border-radius: 5px;
-  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
+  /* box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3); */
 }
+
 /* .cover.cover-left {
   z-index: -1;
 } */
@@ -365,6 +373,10 @@
   width: 100%;
   height: 100%;
   background: var(--pages-color);
+  /* background-image: url('../assets/page_01.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover; */
   padding: 1.5rem 2rem;
 
   overflow: auto;

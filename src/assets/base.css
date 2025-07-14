@@ -13,11 +13,14 @@
     #f5f3ef,
     #c8b6a6
   ); /* Gradient từ nâu đất sang xanh lá cây */
-  --pages-color: linear-gradient(
+  /* --pages-color: linear-gradient(
     90deg,
     #fff,
     #ddd
-  ); /* Gradient từ trắng sang xám nhạt */
+  ); Gradient từ trắng sang xám nhạt */
+
+  --pages-color: linear-gradient(90deg, #fdfdfb, #f0ede8);
+
   --border: 0.125rem solid #fc3c3c; /* Viền nâu đất */
   --box-shadow: 0 0 0.6rem rgba(0, 0, 0, 0.2); /* Hiệu ứng bóng đổ nhẹ */
 }
