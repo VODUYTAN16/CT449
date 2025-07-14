@@ -22,11 +22,6 @@
           <h6>{{ book.tacgia }}</h6>
           <h6>Publication Year: {{ book.namxuatban }}</h6>
         </div>
-      </div>
-    </div>
-
-    <div class="row gx-5 inf-bot px-5">
-      <div class="col-12 d-flex flex-column align-items-center ms-5">
         <button
           class="btn bg-success text-white mt-3"
           type="button"
@@ -37,7 +32,7 @@
           Borrow Book
         </button>
         <button
-          class="btn bg-success text-white mt-3"
+          class="btn bg-success text-white mt-3 mx-3"
           type="button"
           data-bs-toggle="modal"
           data-bs-target="#bookcontent"
@@ -46,16 +41,17 @@
           <i class="bx bx-reading"></i> Read Book
         </button>
       </div>
+    </div>
+
+    <div class="row gx-5 inf-bot px-5">
+      <div class="col-12 d-flex flex-column align-items-center ms-5"></div>
       <!-- Description -->
-      <div class="col-md-6 mb-4 px-5">
+      <div class="col-6 mb-4 px-5">
         <h5 class="fw-bold mb-3">Description</h5>
         <p class="text-muted" style="text-align: justify">{{ book.mota }}</p>
       </div>
       <!-- Additional Info -->
-      <div
-        class="col-md-6 px-5"
-        style="border-left: 1px solid rgba(0, 0, 0, 0.3)"
-      >
+      <div class="col-6 px-5" style="border-left: 1px solid rgba(0, 0, 0, 0.3)">
         <div class="row justify-content-bet">
           <div class="col-md-5 mb-4">
             <h5 class="fw-bold mb-2">Language</h5>
@@ -66,9 +62,19 @@
           </div>
 
           <div class="col mb-4">
-            <h5 class="fw-bold mb-2">Paperback</h5>
-            <p class="text-muted mb-2">Paper texture, full colour, 345 pages</p>
-            <p class="text-muted">Book code: {{ book.masach }}</p>
+            <h5 class="fw-bold mb-2">Publication Info</h5>
+            <p>
+              <span class="text-muted">Publisher:</span>
+              {{ book.nxb_info?.tennxb }}
+            </p>
+            <p>
+              <span class="text-muted">Address:</span>
+              {{ book.nxb_info?.diachi }}
+            </p>
+            <p>
+              <span class="text-muted">Publication Year:</span>
+              {{ book.namxuatban }}
+            </p>
           </div>
         </div>
       </div>
@@ -86,7 +92,7 @@
         <div class="modal-content">
           <div class="modal-header bg-success text-white">
             <h1 class="modal-title fs-5" id="exampleModalLabel">
-              THÔNG TIN MƯỢN SÁCH
+              BOOK LOAN FORM
             </h1>
             <button
               type="button"
@@ -96,68 +102,81 @@
             ></button>
           </div>
           <div class="modal-body">
-            <form @submit.prevent="submitForm">
+            <form @submit.prevent="submitForm(madocgia, book.masach)">
               <div class="mb-3 row">
-                <label class="col-sm-3 col-form-label">Full of name:</label>
-                <div class="col-sm-9">
-                  <input
-                    v-model="formData.readerId"
-                    type="text"
-                    class="form-control"
-                    required
-                  />
+                <label
+                  class="col-sm-4 col-form-label"
+                  style="max-width: fit-content"
+                  >Full Of Name:</label
+                >
+                <div class="col d-flex align-items-center">Võ duy tân</div>
+              </div>
+
+              <div class="mb-3 row">
+                <label
+                  class="col-sm-4 col-form-label"
+                  style="max-width: fit-content"
+                  >Phone Number:</label
+                >
+
+                <div class="col d-flex align-items-center">0008998998</div>
+              </div>
+
+              <div class="mb-3 row">
+                <label
+                  class="col-sm-4 col-form-label"
+                  style="max-width: fit-content"
+                  >Name Of Book:</label
+                >
+                <div class="col d-flex align-items-center">
+                  {{ book.tensach }}
                 </div>
               </div>
 
               <div class="mb-3 row">
-                <label class="col-sm-3 col-form-label">Mã sách:</label>
-                <div class="col-sm-9">
-                  <input
-                    v-model="formData.bookId"
-                    type="text"
-                    class="form-control"
-                    required
-                  />
-                </div>
+                <label
+                  class="col-sm-4 col-form-label"
+                  style="max-width: fit-content"
+                  >Quantity:</label
+                >
+                <div class="col d-flex align-items-center">1</div>
+              </div>
+              <div class="alert alert-info" role="alert">
+                Kindly pick up the book in person at the library!
               </div>
 
-              <div class="mb-3 row">
-                <label class="col-sm-3 col-form-label">Borrow Date:</label>
-                <div class="col-sm-9">
-                  <input
-                    v-model="formData.borrowDate"
-                    type="date"
-                    class="form-control"
-                    required
-                    disabled
-                  />
-                </div>
+              <hr />
+
+              <div class="form-check mb-3">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="terms"
+                  required
+                />
+                <label class="form-check-label" for="terms">
+                  <em>
+                    I agree with an overdue fee of 10.000 VND per day will be
+                    applied for books returned past the due date. In the event
+                    of a lost book, full compensation equal to 100% of the
+                    book's value is required.
+                  </em>
+                </label>
               </div>
 
-              <div class="mb-3 row">
-                <label class="col-sm-3 col-form-label">Return Date:</label>
-                <div class="col-sm-9">
-                  <input
-                    v-model="formData.returnDate"
-                    type="date"
-                    class="form-control"
-                    required
-                  />
-                </div>
+              <div class="text-end">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary mx-2">
+                  Confirm
+                </button>
               </div>
             </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button type="button" class="btn btn-primary" @click="submitForm">
-              Xác nhận mượn
-            </button>
           </div>
         </div>
       </div>
@@ -169,35 +188,43 @@
 import { reactive, ref, onMounted } from 'vue';
 import { useRoute, onBeforeRouteUpdate } from 'vue-router';
 import BookPage from './BookPage.vue';
+import { _fetch_Book_Detail, _borrow_book } from '../service/service';
 import api from '../axios.js';
 
 // // Data
 // const modal = ref(null);
 // let modalInstance = null;
-const formData = ref({
-  readerId: '',
-  bookId: '',
-  borrowDate: new Date().toISOString().split('T')[0], // Mặc định là ngày hiện tại
-  returnDate: new Date(),
-  staffId: '',
-});
-const staffList = ref([]);
+const showModal = ref(false);
+// const formData = ref({
+//   madocgia: 'DG001',
+//   masach: 'DG001',
+//   manv: '',
+//   ngaymuon: new Date().toISOString().split('T')[0], // Mặc định là ngày hiện tại
+//   hantra: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+//     .toISOString()
+//     .split('T')[0],
+//   trangthai: 3,
+//   songaymuon: 7,
+//   quahan: false,
+// });
+const currentUser = ref({});
 
-// // Methods
-// const openModal = () => {
-//   modalInstance.show();
-// };
+const openModal = () => {
+  showModal.value = true;
+};
 
-// const closeModal = () => {
-//   modalInstance.hide();
-// };
+const closeModal = () => {
+  showModal.value = false;
+};
 
-const submitForm = async () => {
+const submitForm = async (madocgia, masach) => {
+  if (!confirm('Are you sure to borrow this book?')) return;
+
   try {
-    const response = await api.post('/api/borrow', formData.value);
+    const response = await _borrow_book(madocgia, masach);
     alert('Borrow book successfully !');
-    // closeModal();
-    resetForm();
+    closeModal();
+    // resetForm();
   } catch (error) {
     console.error('Lỗi khi mượn sách:', error);
     alert(
@@ -206,15 +233,20 @@ const submitForm = async () => {
   }
 };
 
-const resetForm = () => {
-  formData.value = {
-    readerId: '',
-    bookId: '',
-    borrowDate: new Date().toISOString().split('T')[0],
-    returnDate: new Date(),
-    staffId: '',
-  };
-};
+// const resetForm = () => {
+//   formData.value = {
+//     madocgia: 'DG001',
+//     masach: 'DG001',
+//     manv: '',
+//     ngaymuon: new Date().toISOString().split('T')[0],
+//     hantra: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+//       .toISOString()
+//       .split('T')[0],
+//     trangthai: 3,
+//     songaymuon: 7,
+//     quahan: false,
+//   };
+// };
 
 const route = useRoute();
 const book = ref({
@@ -229,20 +261,10 @@ const book = ref({
   mota: String,
 });
 
-const _fetch_Book = async (masach) => {
-  const response = await api.get('/api/docgia/books/search?masach=' + masach);
-  return response.data[0];
-};
-
 onMounted(async () => {
   const masach = route.params.masach;
-  book.value = await _fetch_Book(masach);
+  book.value = await _fetch_Book_Detail(masach);
   console.log(book.value);
-
-  // api.get('api/staff').then((response) => {
-  //   staffList.value = response.data;
-  //   console.log(staffList.value);
-  // });
 });
 </script>
 
@@ -261,12 +283,13 @@ onMounted(async () => {
   background-color: var(--sub-bg);
   min-height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
 .inf-head {
   position: absolute;
   top: 15%;
-  left: 50%;
+  left: 35%;
   transform: translate(-25%, -10%);
 
   z-index: 2;
@@ -276,9 +299,10 @@ onMounted(async () => {
   background-color: var(--white);
   margin: 0;
   position: absolute;
-  top: 35%; /* Bắt đầu từ giữa màn hình */
+  top: 40%; /* Bắt đầu từ giữa màn hình */
   /* left: 0; */
   min-height: 65%; /* Chiếm ít nhất nửa màn hình */
+  min-width: 100%;
   border-top-left-radius: 50px;
   box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
 }

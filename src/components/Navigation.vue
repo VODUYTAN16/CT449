@@ -63,14 +63,21 @@
       <a href="#" class="nav-link text-dark d-flex align-items-center">
         <i class="bi bi-question-circle-fill me-2"></i> Help
       </a>
-      <a href="#" class="nav-link text-dark d-flex align-items-center">
+      <a @click="_logout" class="nav-link text-dark d-flex align-items-center">
         <i class="bi bi-box-arrow-right me-2"></i> Log out
       </a>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import router from '../router';
+
+const _logout = () => {
+  localStorage.removeItem('token');
+  location.reload();
+};
+</script>
 
 <style scoped>
 .nav-link:hover {

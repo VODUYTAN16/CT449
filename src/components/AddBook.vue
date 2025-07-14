@@ -1,112 +1,124 @@
 <template>
   <div class="container mt-5">
-    <h2 class="mb-4">Thêm Sách Mới</h2>
+    <h2 class="mb-4">📚 Thêm Sách Mới</h2>
+
     <form @submit.prevent="submitBook">
       <!-- Tiêu đề sách -->
       <div class="mb-3">
-        <label for="bookTitle" class="form-label"
-          >Tiêu đề sách <span class="text-danger">*</span></label
-        >
-        <input
-          type="text"
-          class="form-control"
-          id="bookTitle"
-          v-model.trim="book.title"
-          required
-          placeholder="Nhập tiêu đề sách"
-        />
+        <label class="form-label">Tên sách *</label>
+        <input v-model="book.tensach" class="form-control" required />
+      </div>
+
+      <!-- Mã sách -->
+      <div class="mb-3">
+        <label class="form-label">Mã sách *</label>
+        <input v-model="book.masach" class="form-control" required />
       </div>
 
       <!-- Tác giả -->
       <div class="mb-3">
-        <label for="bookAuthor" class="form-label"
-          >Tác giả <span class="text-danger">*</span></label
-        >
-        <input
-          type="text"
-          class="form-control"
-          id="bookAuthor"
-          v-model.trim="book.author"
-          required
-          placeholder="Nhập tên tác giả"
-        />
+        <label class="form-label">Tác giả *</label>
+        <input v-model="book.tacgia" class="form-control" required />
       </div>
 
-      <!-- Thể loại -->
+      <!-- Nhà xuất bản -->
       <div class="mb-3">
-        <label for="bookCategory" class="form-label"
-          >Thể loại <span class="text-danger">*</span></label
-        >
-        <input
-          type="text"
-          class="form-control"
-          id="bookCategory"
-          v-model.trim="book.category"
-          required
-          placeholder="Ví dụ: Tiểu thuyết, Khoa học..."
-        />
+        <label class="form-label">Nhà xuất bản *</label>
+        <select v-model="book.manxb" class="form-select" required>
+          <option disabled value="">-- Chọn nhà xuất bản --</option>
+          <option v-for="n in nxbList" :key="n.manxb" :value="n.manxb">
+            {{ n.tennxb }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Danh mục -->
+      <div class="mb-3">
+        <label class="form-label">Danh mục *</label>
+        <select v-model="book.madm" class="form-select" required>
+          <option disabled value="">-- Chọn danh mục --</option>
+          <option v-for="c in categoryList" :key="c.madm" :value="c.madm">
+            {{ c.tendm }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Giá và số lượng -->
+      <div class="row mb-3">
+        <div class="col">
+          <label class="form-label">Đơn giá *</label>
+          <input
+            type="number"
+            v-model.number="book.dongia"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="col">
+          <label class="form-label">Số quyển *</label>
+          <input
+            type="number"
+            v-model.number="book.soquyen"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="col">
+          <label class="form-label">Năm xuất bản *</label>
+          <input
+            type="number"
+            v-model.number="book.namxuatban"
+            class="form-control"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Hình ảnh bìa -->
+      <div class="mb-3">
+        <label class="form-label">URL ảnh bìa</label>
+        <input v-model="book.anhbia" type="url" class="form-control" />
+        <div v-if="book.anhbia" class="mt-2">
+          <img
+            :src="book.anhbia"
+            alt="Ảnh bìa"
+            class="img-thumbnail"
+            style="max-height: 200px"
+          />
+        </div>
       </div>
 
       <!-- Mô tả -->
       <div class="mb-3">
-        <label for="bookDescription" class="form-label">Mô tả</label>
-        <textarea
+        <label class="form-label">Mô tả</label>
+        <textarea v-model="book.mota" class="form-control" rows="3"></textarea>
+      </div>
+
+      <!-- Số trang -->
+      <div class="mb-3">
+        <label class="form-label">Số trang *</label>
+        <input
+          v-model.number="book.sotrang"
+          type="number"
           class="form-control"
-          id="bookDescription"
-          rows="3"
-          v-model.trim="book.description"
-          placeholder="Mô tả ngắn về nội dung sách"
+          required
+        />
+      </div>
+
+      <!-- Nội dung Markdown -->
+      <div class="mb-3">
+        <label class="form-label">Nội dung (Markdown)</label>
+        <textarea
+          v-model="book.noidung"
+          class="form-control"
+          rows="6"
+          placeholder="# Nội dung sách"
         ></textarea>
       </div>
 
-      <!-- Số lượng -->
-      <div class="mb-3">
-        <label for="bookQuantity" class="form-label"
-          >Số lượng <span class="text-danger">*</span></label
-        >
-        <input
-          type="number"
-          class="form-control"
-          id="bookQuantity"
-          v-model.number="book.quantity"
-          min="1"
-          required
-          placeholder="Số bản có sẵn"
-        />
-      </div>
-
-      <!-- Hình ảnh -->
-      <div class="mb-3">
-        <label for="bookImage" class="form-label">URL hình ảnh</label>
-        <input
-          type="url"
-          class="form-control"
-          id="bookImage"
-          v-model.trim="book.imageUrl"
-          placeholder="https://example.com/book-cover.jpg"
-        />
-        <div class="mt-2">
-          <img
-            v-if="book.imageUrl"
-            :src="book.imageUrl"
-            alt="Book cover preview"
-            class="img-thumbnail mt-2"
-            style="max-height: 200px"
-          />
-          <div v-else class="text-muted">Chưa có hình ảnh</div>
-        </div>
-      </div>
-
-      <!-- Nút submit -->
-      <button type="submit" class="btn btn-primary" :disabled="loading">
-        <span v-if="loading">
-          <span
-            class="spinner-border spinner-border-sm"
-            role="status"
-            aria-hidden="true"
-          ></span>
-          Đang xử lý...
-        </span>
+      <!-- Nút gửi -->
+      <button class="btn btn-success" :disabled="loading">
+        <span v-if="loading" class="spinner-border spinner-border-sm"></span>
         <span v-else>Thêm sách</span>
       </button>
 
@@ -126,20 +138,43 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
+import api from '../axios';
 
 const book = reactive({
-  title: '',
-  author: '',
-  category: '',
-  description: '',
-  quantity: 1,
-  imageUrl: '',
+  masach: '',
+  tensach: '',
+  dongia: 0,
+  soquyen: 1,
+  namxuatban: new Date().getFullYear(),
+  manxb: '',
+  madm: '',
+  tacgia: '',
+  anhbia: '',
+  mota: '',
+  sotrang: 0,
+  noidung: '',
 });
 
+const nxbList = ref([]);
+const categoryList = ref([]);
 const loading = ref(false);
 const message = ref('');
 const messageType = ref('');
+
+// Fetch NXB và danh mục
+onMounted(async () => {
+  try {
+    const [nxbRes, catRes] = await Promise.all([
+      api.get('/api/nhanvien/nxb'),
+      api.get('/api/nhanvien/category'),
+    ]);
+    nxbList.value = nxbRes.data;
+    categoryList.value = catRes.data;
+  } catch (error) {
+    console.error('Lỗi khi tải dữ liệu:', error);
+  }
+});
 
 const submitBook = async () => {
   loading.value = true;
@@ -147,46 +182,62 @@ const submitBook = async () => {
   messageType.value = '';
 
   try {
-    // Giả lập API call - Thay bằng API thực tế của bạn
-    // const response = await fetch('/api/books', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(book)
-    // });
+    // Gửi dữ liệu sách
+    await api.post('/api/nhanvien/books', {
+      masach: book.masach,
+      tensach: book.tensach,
+      dongia: book.dongia,
+      soquyen: book.soquyen,
+      namxuatban: book.namxuatban,
+      manxb: book.manxb,
+      madm: book.madm,
+      tacgia: book.tacgia,
+      anhbia: book.anhbia,
+      mota: book.mota,
+      sotrang: book.sotrang,
+    });
 
-    // Giả lập delay mạng
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Giả lập kết quả thành công
-    // const result = await response.json();
+    // Gửi nội dung sách (markdown)
+    await api.post('/api/nhanvien/contents', {
+      masach: book.masach,
+      mand: 1, // bạn có thể truyền ID người dùng thực tế ở đây
+      noidung: book.noidung,
+    });
 
     messageType.value = 'success';
-    message.value = 'Thêm sách thành công!';
-
-    // Reset form sau khi thêm thành công
-    Object.assign(book, {
-      title: '',
-      author: '',
-      category: '',
-      description: '',
-      quantity: 1,
-      imageUrl: '',
-    });
-  } catch (error) {
+    message.value = '✅ Thêm sách thành công!';
+    resetForm();
+  } catch (err) {
+    console.error('Lỗi thêm sách:', err);
     messageType.value = 'error';
-    message.value = `Lỗi khi thêm sách: ${error.message}`;
-    console.error('Lỗi thêm sách:', error);
+    message.value = '❌ Lỗi khi thêm sách!';
   } finally {
     loading.value = false;
   }
+};
+
+const resetForm = () => {
+  Object.assign(book, {
+    masach: '',
+    tensach: '',
+    dongia: 0,
+    soquyen: 1,
+    namxuatban: new Date().getFullYear(),
+    manxb: '',
+    madm: '',
+    tacgia: '',
+    anhbia: '',
+    mota: '',
+    sotrang: 0,
+    noidung: '',
+  });
 };
 </script>
 
 <style scoped>
 .container {
   max-width: 800px;
+  margin-bottom: 50px;
 }
 .form-label {
   font-weight: 500;

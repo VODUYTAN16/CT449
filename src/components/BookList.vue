@@ -1,14 +1,27 @@
 <template>
   <main>
-    <div class="d-flex justify-content-between my-4">
-      <div v-for="(book, index) in book_list" :key="index">
+    <div class="d-flex justify-content-between align-items-center my-4">
+      <h3 class="fw-bold mb-0">📚 BOOK RECOMMENDATION</h3>
+      <button
+        class="btn btn-light d-flex justify-content-center align-items-center btn-sm"
+        @click="showAll = !showAll"
+      >
+        {{ showAll ? 'Hide' : 'View All' }}
+        <i class="bx bx-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
+      <div v-for="(book, index) in displayedBooks" :key="index" class="col">
         <router-link
-          :to="`bookdetail/${book.masach}`"
-          class="d-flex justify-content-between my-4 book"
+          :to="`/bookdetail/${book.masach}`"
+          class="book text-decoration-none"
+          style="max-width: fit-content"
         >
           <img
             :src="book.anhbia"
-            alt=""
+            alt="Bìa sách"
+            class="img-fluid rounded shadow-sm"
             style="
               height: 300px;
               border-radius: 5px;
@@ -17,24 +30,22 @@
           />
         </router-link>
       </div>
+      <div
+        v-if="!displayedBooks || displayedBooks.length === 0"
+        class="text-center text-muted my-4"
+      >
+        <i class="bi bi-book" style="font-size: 2rem"></i>
+        <div class="text-center text-danger fw-bold py-3">
+          🔍 Found Nothing!
+        </div>
+      </div>
     </div>
   </main>
 </template>
+
 <script setup>
-// import onMounted from 'vue';
-// const prop = defineProps({
-//     book_list:[  book: {
-//     masach: String,
-//     tensach: String,
-//     dongia: Number,
-//     soquyen: Number,
-//     namxuatban: Number,
-//     manxb: String,
-//     tacgia: String,
-//     anhbia: String,
-//     mota: String,
-//   },]
-// });
+import { computed, ref } from 'vue';
+
 const props = defineProps({
   book_list: {
     type: Array,
@@ -42,10 +53,12 @@ const props = defineProps({
   },
 });
 
-// onMounted({
-//     console.log(book_list);
-// }
-// )
+const showAll = ref(false);
+
+// Sách hiển thị tùy theo chế độ
+const displayedBooks = computed(() => {
+  return showAll.value ? props.book_list : props.book_list.slice(0, 5);
+});
 </script>
 
 <style scoped>
@@ -53,16 +66,11 @@ const props = defineProps({
   transition:
     transform 0.3s,
     box-shadow 0.3s;
+  display: block;
 }
 
 .book:hover {
-  transform: translateY(-5px);
-  transform: scale(1.1);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.thongtinsach {
-  background-color: var(--sub-bg);
-  border-top-left-radius: 2ch;
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 </style>

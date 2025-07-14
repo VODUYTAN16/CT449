@@ -6,6 +6,9 @@ import Borrowed from '@/components/Borrowed.vue';
 import BookDetail from '@/components/BookDetail.vue';
 import AddBook from '@/components/AddBook.vue';
 import BookPage from '@/components/BookPage.vue';
+import RegisterOrLogin from '@/components/RegisterOrLogin.vue';
+import Login from '@/components/LeafFall.vue';
+import UserManagement from '@/components/UserManagement.vue';
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -29,7 +32,7 @@ const router = createRouter({
     },
     {
       path: '/book-page',
-      component: BookPage,
+      component: UserManagement,
     },
     {
       path: '/bookdetail/:masach', // Chúng ta sẽ truyền tham số fileId

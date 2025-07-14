@@ -8,15 +8,18 @@
       >
         <select
           v-model="selectedCategory"
+          @change="onChangeCategory"
           class="me-2 form-select"
           style="border: none"
         >
+          <option value="all">All</option>
           <option
             v-for="(item, index) in categories"
             :key="index"
+            :value="item.madm"
             style="border: none"
           >
-            {{ item }}
+            {{ item.tendm }}
           </option>
         </select>
         <div class="vr mx-3"></div>
@@ -24,25 +27,29 @@
 
         <input
           v-model="searchQuery"
-          placeholder="Find the book you like..."
+          placeholder="Find books by name"
           class="me-2 flex-grow-1 form-control"
         />
 
-        <button variant="dark" @click="onSearch" class="btn btn-success px-3">
+        <button
+          variant="dark"
+          @click.prevent="onSearch"
+          class="btn btn-success px-3"
+        >
           Search
         </button>
       </form>
       <div class="recommendation mt-5">
-        <div class="d-flex justify-content-between">
+        <!-- <div class="d-flex justify-content-between">
           <h3>Book Recommendation</h3>
           <button
             class="btn btn-light d-flex justify-content-center align-items-center"
           >
             View all <i class="bx bx-chevron-right"></i>
           </button>
-        </div>
+        </div> -->
         <!-- <div v-for="(book, index) in SachList" :key="index"> -->
-        <BookList :book_list="SachList"></BookList>
+        <BookList :book_list="displayedBooks || []"></BookList>
         <!-- </div> -->
       </div>
       <!-- <div class="recommendation mt-5">
@@ -63,36 +70,50 @@
 // import BookDetail from './BookDetail.vue';
 import BookList from './BookList.vue';
 import { onMounted, ref } from 'vue';
+import { _fetch_Book_List, _fetch_Category } from '../service/service';
 import api from '../axios.js';
-const selectedCategory = ref('All Categories');
+
+const selectedCategory = ref('all');
+const displayedBooks = ref([]);
 const searchQuery = ref('');
 
 const SachList = ref([]);
-const categories = ref([
-  'All Categories',
-  'Money/Investing',
-  'Design',
-  'Business',
-  'Self Improvement',
-]);
+const categories = ref([]);
 
 const onSearch = () => {
-  console.log(
-    'Searching for:',
-    searchQuery.value,
-    'in',
-    selectedCategory.value
-  );
+  const keyword = searchQuery.value.trim().toLowerCase();
+
+  if (!keyword) {
+    // Nếu không có từ khóa, hiển thị toàn bộ sách
+    displayedBooks.value = SachList.value;
+  } else {
+    displayedBooks.value = SachList.value.filter((book) =>
+      book.tensach?.toLowerCase().includes(keyword)
+    );
+  }
+
+  console.log('Kết quả tìm kiếm:', displayedBooks.value);
 };
 
-const _fetch_Book_List = async () => {
-  const response = await api.get('/api/docgia/books');
-  return response.data;
+const onChangeCategory = async () => {
+  if (selectedCategory.value == 'all') {
+    SachList.value = await _fetch_Book_List();
+    displayedBooks.value = SachList.value;
+  } else {
+    SachList.value = await _fetch_Book_List(selectedCategory.value);
+    displayedBooks.value = SachList.value;
+  }
 };
 
 onMounted(async () => {
-  SachList.value = await _fetch_Book_List();
-  console.log(SachList.value);
+  console.log(history.state);
+  if (history.state?.category) {
+    selectedCategory.value = history.state?.category || '';
+  }
+  onChangeCategory();
+
+  categories.value = await _fetch_Category();
+  console.log(categories.value);
 });
 </script>
 <style scoped>

@@ -3,6 +3,7 @@
     class="modal fade"
     id="bookcontent"
     tabindex="-1"
+    ref="myModal"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
   >
@@ -47,7 +48,14 @@
 
                     <!-- Credit -->
                     <div class="text-muted small mb-4">
-                      <p>Trình bày bởi: <strong>Dự án Sách Số</strong></p>
+                      <p>
+                        Nhà xuất bản:
+                        <strong>{{ book.nxb_info?.tennxb }}</strong>
+                      </p>
+                      <p>
+                        Địa chỉ:
+                        <strong>{{ book.nxb_info?.diachi }}</strong>
+                      </p>
                       <p>
                         Năm xuất bản: <strong>{{ book.namxuatban }}</strong>
                       </p>
@@ -59,7 +67,7 @@
                     <a
                       href="#"
                       class="btn contact-me btn-danger px-4 py-2 fw-bold shadow-sm"
-                      style="max-width: fit-content"
+                      style="width: 2rem; height: 2rem"
                     >
                       <i class="bx bx-arrow-in-down-right-square"></i>
                     </a>
@@ -654,10 +662,10 @@
 }
 </style>
 <script setup>
-import { onMounted } from 'vue';
-import { computed } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import { marked } from 'marked';
 
+const myModal = ref(null);
 const props = defineProps({
   book: {
     type: Object,
@@ -723,8 +731,9 @@ const renderedPages = computed(() => {
   return pages.map((content) => (content ? marked.parse(content.trim()) : ''));
 });
 onMounted(() => {
-  const myModal = document.getElementById('bookcontent');
-  myModal.addEventListener('shown.bs.modal', () => {
+  // const myModal = document.getElementById('bookcontent');
+  console.log(myModal);
+  myModal.value.addEventListener('shown.bs.modal', () => {
     // Lúc này modal đã mở hoàn toàn -> gắn sự kiện an toàn
 
     console.log('Modal đã mở!');

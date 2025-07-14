@@ -3,14 +3,14 @@
     <div class="box"></div>
     <div class="sidebar">
       <!-- Header với tìm kiếm -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">🏷️ Khám Phá Thể Loại</h1>
-        <form class="search-box shadow input-group w-50">
+      <div class="d-flex flex-column align-items-start mb-4">
+        <h1 class="mb-4">🏷️ Explore Book Genres</h1>
+        <form class="search-box shadow input-group w-50" @submit.prevent>
           <input
             v-model="searchQuery"
             type="text"
             class="form-control"
-            placeholder="Tìm thể loại..."
+            placeholder="Find by title"
           />
           <button class="btn btn-success px-3">
             <i class="bx bx-grid-search"></i>
@@ -18,22 +18,11 @@
         </form>
       </div>
 
-      <!-- Bộ lọc nhanh -->
-      <div class="filter-tags mb-4">
-        <button
-          v-for="tag in popularTags"
-          :key="tag"
-          class="btn btn-sm btn-outline-success me-2 mb-2"
-          @click="applyTagFilter(tag)"
-        >
-          {{ tag }}
-        </button>
-      </div>
-
+      <h3>List of Categories</h3>
       <!-- Lưới thể loại -->
-      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 mt-4">
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 mt-2">
         <div
-          v-for="category in filteredCategories"
+          v-for="category in filteredCategories.reverse()"
           :key="category.id"
           class="col"
         >
@@ -43,26 +32,35 @@
           >
             <div class="card-img-top-container">
               <img
-                :src="category.image || '/placeholder-book.jpg'"
+                :src="category.anhdm || '/placeholder-book.jpg'"
                 class="card-img-top"
                 alt="Ảnh thể loại"
               />
-              <div class="book-count-badge">{{ category.bookCount }} sách</div>
+              <div class="book-count-badge">{{ category.sosach }} sách</div>
             </div>
             <div class="card-body">
-              <h5 class="card-title">{{ category.name }}</h5>
+              <h5 class="card-title">{{ category.tendm }}</h5>
               <p class="card-text text-muted small">
-                {{ category.description || 'Khám phá bộ sưu tập đa dạng' }}
+                {{ category.mota || 'Khám phá bộ sưu tập đa dạng' }}
               </p>
             </div>
             <div class="card-footer bg-transparent">
               <button
                 class="btn btn-sm btn-success w-100"
-                @click="viewCategory(category)"
+                @click="viewCategory(category.madm)"
               >
                 Xem chi tiết
               </button>
             </div>
+          </div>
+        </div>
+        <div
+          v-if="filteredCategories.length == 0 || !filteredCategories"
+          class="text-center text-muted my-4"
+        >
+          <i class="bi bi-book" style="font-size: 2rem"></i>
+          <div class="text-center text-danger fw-bold py-3">
+            🔍 Found Nothing!
           </div>
         </div>
       </div>
@@ -72,80 +70,45 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-// Tạo ID duy nhất cho carousel
-const carouselId =
-  'categoryCarousel' + Math.random().toString(36).substring(2, 9);
-const carousel = ref(null);
+import { _fetch_Category } from '../service/service';
 
-// Dữ liệu mẫu
-const categories = ref([
-  {
-    id: 1,
-    name: 'Tâm lý học',
-    description: 'Hiểu cách cơ thể phản ứng trước sự việc.',
-    bookCount: 128,
-    image:
-      'https://i.pinimg.com/736x/c1/f3/43/c1f3431d7cb45d0c59d464ec02d5a4a2.jpg',
-  },
-  {
-    id: 2,
-    name: 'Kỹ năng bán hàng',
-    description: 'Kỹ năng bán mọi loại hàng hóa.',
-    bookCount: 92,
-    image:
-      'https://i.pinimg.com/736x/dc/25/92/dc25927a5bca85d31b0f5dfce357d3a2.jpg',
-  },
-  {
-    id: 3,
-    name: 'Kỹ Năng Sống',
-    description: 'Phát triển bản thân và tư duy tích cực',
-    bookCount: 76,
-    image:
-      'https://i.pinimg.com/736x/f5/59/21/f55921dfa179f60ada56c286d0254d00.jpg',
-  },
-  {
-    id: 4,
-    name: 'Kinh Tế - Tài Chính',
-    description: 'Kiến thức quản lý tài chính cá nhân và đầu tư',
-    bookCount: 64,
-    image:
-      'https://i.pinimg.com/736x/0a/f4/8d/0af48de23250dc1bba61e235fe544c6a.jpg',
-  },
-]);
+const router = useRouter();
 
-const featuredBooks = ref([
-  {
-    id: 1,
-    title: 'Dune',
-    author: 'Frank Herbert',
-    cover: '/dune.jpg',
-    category: 'Khoa Học Viễn Tưởng',
-  },
-  {
-    id: 2,
-    title: '1984',
-    author: 'George Orwell',
-    cover: '/1984.jpg',
-    category: 'Khoa Học Viễn Tưởng',
-  },
-  {
-    id: 3,
-    title: 'The Martian',
-    author: 'Andy Weir',
-    cover: '/martian.jpg',
-    category: 'Khoa Học Viễn Tưởng',
-  },
-  {
-    id: 4,
-    title: 'Foundation',
-    author: 'Isaac Asimov',
-    cover: '/foundation.jpg',
-    category: 'Khoa Học Viễn Tưởng',
-  },
-]);
+// 🧠 State
+const categories = ref([]);
+// const featuredBooks = ref([
+//   {
+//     id: 1,
+//     title: 'Dune',
+//     author: 'Frank Herbert',
+//     cover: '/dune.jpg',
+//     category: 'Khoa Học Viễn Tưởng',
+//   },
+//   {
+//     id: 2,
+//     title: '1984',
+//     author: 'George Orwell',
+//     cover: '/1984.jpg',
+//     category: 'Khoa Học Viễn Tưởng',
+//   },
+//   {
+//     id: 3,
+//     title: 'The Martian',
+//     author: 'Andy Weir',
+//     cover: '/martian.jpg',
+//     category: 'Khoa Học Viễn Tưởng',
+//   },
+//   {
+//     id: 4,
+//     title: 'Foundation',
+//     author: 'Isaac Asimov',
+//     cover: '/foundation.jpg',
+//     category: 'Khoa Học Viễn Tưởng',
+//   },
+// ]);
 
-// State
 const searchQuery = ref('');
 const popularTags = ref([
   'Phổ biến',
@@ -155,52 +118,66 @@ const popularTags = ref([
 ]);
 const currentFeaturedCategory = ref('Khoa Học Viễn Tưởng');
 
-// Computed properties
+function normalize(str) {
+  return str
+    .normalize('NFD') // Tách dấu
+    .replace(/[\u0300-\u036f]/g, '') // Xóa dấu
+    .toLowerCase();
+}
+
+// 🧩 Computed
 const filteredCategories = computed(() => {
   if (!searchQuery.value) return categories.value;
-  const query = searchQuery.value.toLowerCase();
-  return categories.value.filter(
-    (cat) =>
-      cat.name.toLowerCase().includes(query) ||
-      (cat.description && cat.description.toLowerCase().includes(query))
+  const query = normalize(searchQuery.value);
+
+  return categories.value.filter((cat) =>
+    normalize(cat.tendm || '').includes(query)
   );
 });
 
-const chunkedFeaturedBooks = computed(() => {
-  const chunkSize = 4;
-  const chunks = [];
-  for (let i = 0; i < featuredBooks.value.length; i += chunkSize) {
-    chunks.push(featuredBooks.value.slice(i, i + chunkSize));
-  }
-  return chunks;
-});
+// const chunkedFeaturedBooks = computed(() => {
+//   const chunkSize = 4;
+//   const chunks = [];
+//   for (let i = 0; i < featuredBooks.value.length; i += chunkSize) {
+//     chunks.push(featuredBooks.value.slice(i, i + chunkSize));
+//   }
+//   return chunks;
+// });
 
-// Methods
+// 🎯 Methods
 const applyTagFilter = (tag) => {
   searchQuery.value = tag;
 };
 
-const viewCategory = (category) => {
-  currentFeaturedCategory.value = category.name;
-  // Logic xử lý khi click vào thể loại
-  console.log('Selected category:', category.name);
-
-  // Cuộn đến carousel sau khi chọn thể loại
-  setTimeout(() => {
-    const element = document.querySelector('.featured-books-carousel');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, 100);
+const viewCategory = async (category) => {
+  try {
+    // Chuyển route và truyền dữ liệu bằng history.state
+    router.push({
+      name: 'Discover',
+      state: { category: category },
+    });
+  } catch (error) {
+    console.error('Error loading books:', error);
+  }
 };
 
-// Tự động khởi tạo carousel khi component được mount
-onMounted(() => {
-  // Tạo ID cho carousel element
+// 🎠 Carousel ID
+const carousel = ref(null);
+const carouselId =
+  'categoryCarousel' + Math.random().toString(36).substring(2, 9);
+
+// 🚀 Fetch API khi component mount
+onMounted(async () => {
+  try {
+    categories.value = await _fetch_Category();
+    console.log(categories.value);
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách thể loại:', error);
+  }
+
+  // Tạo carousel nếu dùng Bootstrap
   if (carousel.value) {
     carousel.value.id = carouselId;
-
-    // Khởi tạo carousel nếu Bootstrap đã được load
     if (window.bootstrap) {
       new window.bootstrap.Carousel(carousel.value, {
         interval: 5000,
