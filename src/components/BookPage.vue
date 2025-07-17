@@ -373,7 +373,7 @@
   width: 100%;
   height: 100%;
   background: var(--pages-color);
-  /* background-image: url('../assets/page_01.png');
+  /* background-image: url('../assets/border.png');
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover; */

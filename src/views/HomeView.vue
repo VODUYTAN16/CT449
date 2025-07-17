@@ -6,12 +6,14 @@ import { ref } from 'vue';
 import api from '../axios';
 import { onMounted } from 'vue';
 
+const role = ref('');
 const isAuthenticated = ref(false);
 onMounted(async () => {
   try {
     const token = localStorage.getItem('token');
     if (token) {
       const res = await api.post('/api/auth/verify-token');
+      role.value = res.data.user?.role;
       console.log(res);
       isAuthenticated.value = true;
     }
@@ -27,7 +29,7 @@ onMounted(async () => {
   <main style="overflow-x: hidden">
     <div v-if="isAuthenticated">
       <div class="row" style="position: relative">
-        <div class="col-2 p-0 m-0"><Navigation></Navigation></div>
+        <div class="col-2 p-0 m-0"><Navigation :role="role"></Navigation></div>
         <div
           class="col p-0 m-0"
           style="overflow-y: scroll !important; max-height: 100vh"

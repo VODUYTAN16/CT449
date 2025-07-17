@@ -18,6 +18,7 @@
           <option value="2">Returned</option>
           <option value="0">Overdue</option>
           <option value="3">Requested</option>
+          <option value="4">Lost</option>
         </select>
         <div class="vr mx-3"></div>
         <i class="bx bx-search-big"></i>
@@ -82,7 +83,15 @@
                   @click="handleReturnBook(item._id)"
                   class="btn btn-sm btn-outline-success"
                 >
-                  Trả sách
+                  Return Book
+                </button>
+
+                <button
+                  v-if="item.trangthai === 1 || item.trangthai === 0"
+                  @click="handleLostBook(item._id)"
+                  class="btn btn-sm btn-outline-danger mt-1"
+                >
+                  Lost Book
                 </button>
 
                 <button
@@ -90,7 +99,7 @@
                   @click="handleApproveRequest(item._id)"
                   class="btn btn-sm btn-outline-primary"
                 >
-                  Duyệt
+                  Approve
                 </button>
               </td>
             </tr>
@@ -148,6 +157,7 @@ const STATUS = {
   BORROWING: 1,
   RETURNED: 2,
   REQUESTED: 3,
+  LOST: 4,
 };
 
 // State
@@ -247,6 +257,7 @@ const checkAndUpdateOverdue = () => {
 
 // Duyệt mượn sách
 const handleApproveRequest = async (id) => {
+  if (!confirm('Are you sure?')) return;
   const item = borrowHistory.value.find((i) => i._id === id);
   if (!item) return;
 
@@ -268,12 +279,14 @@ const handleApproveRequest = async (id) => {
     item.hantra = dueDateStr;
   } catch (err) {
     console.error('Failed to approve request:', err);
-    alert('Failed to approve borrow request.');
+    alert(err.response.data.message);
   }
 };
 
 // Trả sách
 const handleReturnBook = async (id) => {
+  if (!confirm('Are you sure?')) return;
+
   const item = borrowHistory.value.find((i) => i._id === id);
   if (!item) return;
 
@@ -306,13 +319,64 @@ const handleReturnBook = async (id) => {
   }
 };
 
+//Mat sach
+const handleLostBook = async (id) => {
+  if (
+    !confirm(
+      'Xác nhận mất sách? Sẽ tính phí phạt bằng giá sách cộng phí quá hạn (nếu có).'
+    )
+  )
+    return;
+
+  const item = borrowHistory.value.find((i) => i._id === id);
+  if (!item) return;
+
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+  const dueDate = new Date(item.hantra);
+
+  // Tính phí quá hạn (nếu có)
+  let overdueFee = 0;
+  if (today > dueDate) {
+    const diffDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+    overdueFee = diffDays * 10000;
+  }
+
+  // Lấy giá sách
+  const bookPrice = item.sach_info?.dongia || 0;
+  const totalFee = bookPrice + overdueFee;
+
+  try {
+    await _update_borrow_status(id, {
+      trangthai: STATUS.LOST,
+      ngaytra: todayStr,
+      phiphat: totalFee,
+      // Có thể thêm flag đánh dấu là mất sách nếu cần
+    });
+
+    // Cập nhật local state
+    item.trangthai = STATUS.LOST;
+    item.ngaytra = todayStr;
+    item.phiphat = totalFee;
+
+    alert(
+      `Đã xử lý mất sách. Tổng phí: ${totalFee.toLocaleString()} VND (Giá sách: ${bookPrice.toLocaleString()} VND, phí trễ: ${overdueFee.toLocaleString()} VND)`
+    );
+  } catch (err) {
+    console.error('Xử lý mất sách thất bại:', err);
+    alert('Xử lý mất sách thất bại.');
+  }
+};
+
 // Hiển thị nhãn trạng thái
 const getStatusLabel = (code) =>
-  ['Overdue', 'Borrowing', 'Returned', 'Requested'][code];
+  ['Overdue', 'Borrowing', 'Returned', 'Requested', 'Lost'][code];
 
 // CSS tương ứng với trạng thái
 const getStatusClass = (code) =>
-  ['bg-danger', 'bg-warning text-dark', 'bg-success', 'bg-info'][code];
+  ['bg-danger', 'bg-warning text-dark', 'bg-success', 'bg-info', 'bg-danger'][
+    code
+  ];
 
 // Phân trang
 const goToPage = (page) => (currentPage.value = page);

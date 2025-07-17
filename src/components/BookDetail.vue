@@ -28,6 +28,7 @@
           <h2>{{ book.tensach }}</h2>
           <h6>{{ book.tacgia }}</h6>
           <h6>Publication Year: {{ book.namxuatban }}</h6>
+          <h6>Remaining Quantity: {{ book.soquyen }}</h6>
         </div>
         <button
           class="btn bg-success text-white mt-3"

@@ -24,7 +24,7 @@
           <i class="bx bxs-grid-circle me-2 p-2"></i> Category</router-link
         >
       </li>
-      <li class="nav-item">
+      <li class="nav-item" v-if="role == 'admin'">
         <router-link
           to="/borrowed"
           active-class="active"
@@ -35,6 +35,17 @@
       </li>
       <li class="nav-item">
         <router-link
+          to="/borrowed"
+          active-class="active"
+          class="nav-link d-flex align-items-center text-dark"
+        >
+          <i class="fa-regular fa-handshake me-2 p-2"></i>Book Borrowing
+          History</router-link
+        >
+      </li>
+
+      <li class="nav-item" v-if="role == 'admin'">
+        <router-link
           to="/add-book"
           active-class="active"
           class="nav-link d-flex align-items-center text-dark"
@@ -43,7 +54,7 @@
           Add Book</router-link
         >
       </li>
-      <li class="nav-item">
+      <li class="nav-item" v-if="role == 'admin'">
         <router-link
           to="/book-page"
           active-class="active"
@@ -71,7 +82,9 @@
 </template>
 
 <script setup>
-import router from '../router';
+const prep = defineProps({ role: {} });
+
+console.log(prep.role);
 
 const _logout = () => {
   localStorage.removeItem('token');
