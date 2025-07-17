@@ -87,6 +87,12 @@ class TheoDoiMuonSachService {
     });
   }
 
+  async findById(id) {
+    return await this.TheoDoiMuonSach.findOne({
+      _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+    });
+  }
+
   async updateFeature(id, feature) {
     const filter = {
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,

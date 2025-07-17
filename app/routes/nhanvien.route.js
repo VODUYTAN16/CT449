@@ -12,8 +12,16 @@ const danhMucController = require('../controllers/danhmuc.controller');
 // router.use(verifyToken);
 // router.use(isAdmin);
 // layDS nhanvien
-router.route('/staffs').get(nhanVienController.findAll);
-router.route('/users').get(docgiaController.findAll);
+router
+  .route('/staffs')
+  .get(nhanVienController.findAll)
+  .delete(nhanVienController.delete)
+  .put(nhanVienController.update);
+router
+  .route('/users')
+  .get(docgiaController.findAll)
+  .delete(docgiaController.delete)
+  .put(docgiaController.update);
 
 //
 router.route('/books').post(sachController.create); // Thêm sách mới

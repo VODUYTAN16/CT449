@@ -72,9 +72,9 @@ class SachService {
     });
   }
 
-  async update(id, payload) {
+  async update(masach, payload) {
     const filter = {
-      _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+      masach: masach,
     };
     const update = this.extractSachData(payload);
     const result = await this.Sach.findOneAndUpdate(
@@ -83,6 +83,26 @@ class SachService {
       { returnDocument: 'after' }
     );
     return result;
+  }
+
+  async incSLSach(masach) {
+    return await this.Sach.updateOne(
+      { masach: masach },
+      { $inc: { soquyen: 1 } }
+    );
+  }
+
+  async decSLSach(masach) {
+    return await this.Sach.updateOne(
+      { masach: masach },
+      { $inc: { soquyen: -1 } }
+    );
+  }
+
+  async checkSL(masach) {
+    const sachHienTai = await this.findByTitle(masach);
+    console.log(sachHienTai);
+    return sachHienTai && sachHienTai[0].soquyen > 0;
   }
 
   async delete(id) {

@@ -14,8 +14,8 @@ router.post('/verify-token', authenticateToken, async (req, res, next) => {
     if (!req.user) {
       return next(new ApiError(500, 'token expired'));
     }
-    res.send({ message: 'Not expire' });
-  } catch (err) {
+    res.send({ message: 'Not expire', user: req.user });
+  } catch (error) {
     console.log(error);
     return next(new ApiError(500, 'token expired'));
   }

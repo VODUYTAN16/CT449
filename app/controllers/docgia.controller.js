@@ -62,6 +62,7 @@ exports.create = async (req, res, next) => {
 
     // Kiểm tra số điện thoại đã tồn tại chưa
     const existing = await userService.findUserByPhone(dienthoai);
+    console.log(existing);
     if (existing) {
       return next(new ApiError(409, 'Số điện thoại đã được sử dụng'));
     }
@@ -69,6 +70,9 @@ exports.create = async (req, res, next) => {
     // Hash mật khẩu
     const hashedPassword = await bcrypt.hash(matkhau, 10);
     req.body.matkhau = hashedPassword;
+    const readers = await userService.find({});
+    const madocgia = readers.length + 1;
+    req.body.madocgia = madocgia;
 
     const newUser = await userService.createUser(req.body);
     return res.status(201).send(newUser);
@@ -87,12 +91,37 @@ exports.findAll = async (req, res, next) => {
     if (dienthoai) {
       documents = await docGiaService.findUserByPhone(dienthoai);
     } else {
-      documents = await docGiaService.find({});
+      documents = await docGiaService.find({
+        $or: [{ daxoa: false }, { daxoa: { $exists: false } }],
+      });
     }
 
     return res.send(documents);
   } catch (error) {
     console.log(error);
     return next(new ApiError(500, 'Lỗi truy vấn cơ sở dữ liệu'));
+  }
+};
+
+exports.delete = async (req, res, next) => {
+  console.log(req.query);
+  try {
+    const docGiaService = new DocGiaService(MongoDB.client);
+    const response = docGiaService.softDelete(req.query.madocgia);
+    return res.send(response);
+  } catch (error) {
+    console.log(error);
+    return next(new ApiError(500, 'Lỗi khi xóa đọc giả'));
+  }
+};
+
+exports.update = async (req, res, next) => {
+  try {
+    const docGiaService = new DocGiaService(MongoDB.client);
+    const response = docGiaService.update(req.body);
+    return res.send(response);
+  } catch (error) {
+    console.log(error);
+    return next(new ApiError(500, 'Lỗi khi update đọc giả'));
   }
 };

@@ -55,7 +55,9 @@ exports.findAll = async (req, res, next) => {
     if (dienthoai) {
       documents = await danhMucService.findAdminByPhone(dienthoai);
     } else {
-      documents = await danhMucService.find({});
+      documents = await danhMucService.find({
+        $or: [{ daxoa: false }, { daxoa: { $exists: false } }],
+      });
     }
 
     return res.send(documents);
@@ -84,6 +86,9 @@ exports.create = async (req, res, next) => {
     // Hash mật khẩu
     const hashedPassword = await bcrypt.hash(matkhau, 10);
     req.body.matkhau = hashedPassword;
+    const admins = await nhanVienService.find({});
+    const manv = admins.length + 1;
+    req.body.manv = manv;
 
     const newUser = await nhanVienService.createUser(req.body);
     return res.status(201).send(newUser);
@@ -91,5 +96,28 @@ exports.create = async (req, res, next) => {
     return next(
       new ApiError(500, error.message || 'Đã xảy ra lỗi khi tạo độc giả')
     );
+  }
+};
+
+exports.delete = async (req, res, next) => {
+  try {
+    const nhanVienService = new NhanVienService(MongoDB.client);
+    console.log(req.query);
+    const response = nhanVienService.softDelete(req.query.manv);
+    return res.send(response);
+  } catch (error) {
+    console.log(error);
+    return next(new ApiError(500, 'Lỗi khi xóa nhân viên'));
+  }
+};
+
+exports.update = async (req, res, next) => {
+  try {
+    const nhanVienService = new NhanVienService(MongoDB.client);
+    const response = nhanVienService.update(req.body);
+    return res.send(response);
+  } catch (error) {
+    console.log(error);
+    return next(new ApiError(500, 'Lỗi khi update nhân viên'));
   }
 };

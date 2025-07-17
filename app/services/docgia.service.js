@@ -15,6 +15,7 @@ class DocGiaService {
       diachi: payload.diachi,
       dienthoai: payload.dienthoai,
       matkhau: payload.matkhau,
+      daxoa: payload.daxoa,
     };
 
     // remove undefined fields
@@ -38,6 +39,24 @@ class DocGiaService {
   async find(filter) {
     const cursor = await this.DocGia.find(filter);
     return await cursor.toArray();
+  }
+
+  async softDelete(madocgia) {
+    const result = await this.DocGia.findOneAndUpdate(
+      { madocgia: madocgia },
+      { $set: { daxoa: true } },
+      { returnDocument: 'after' }
+    );
+    return result;
+  }
+
+  async update(payload) {
+    const result = await this.DocGia.findOneAndUpdate(
+      { madocgia: payload.madocgia },
+      { $set: payload },
+      { returnDocument: 'after' }
+    );
+    return result;
   }
 
   async createUser(payload) {

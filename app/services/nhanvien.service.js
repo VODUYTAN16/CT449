@@ -13,6 +13,9 @@ class NhanVienService {
       chucvu: payload.chucvu,
       diachi: payload.diachi,
       dienthoai: payload.dienthoai,
+      phai: payload.phai,
+      ngaysinh: payload.ngaysinh,
+      daxoa: payload.daxoa,
     };
 
     // remove undefined fields
@@ -25,6 +28,26 @@ class NhanVienService {
 
   async findAdminByPhone(dienthoai) {
     return await this.NhanVien.findOne({ dienthoai });
+  }
+
+  async softDelete(manv) {
+    const result = await this.NhanVien.findOneAndUpdate(
+      { manv: manv },
+      { $set: { daxoa: true } },
+      { returnDocument: 'after' }
+    );
+    console.log(result);
+    return result;
+  }
+
+  async update(payload) {
+    const result = await this.NhanVien.findOneAndUpdate(
+      { manv: payload.manv },
+      { $set: payload },
+      { returnDocument: 'after' }
+    );
+    console.log(result);
+    return result;
   }
 
   async findAdminById(id) {
