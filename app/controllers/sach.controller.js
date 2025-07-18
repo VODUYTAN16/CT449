@@ -13,11 +13,11 @@ exports.findAll = async (req, res, next) => {
       ? await sachService.findByTitle(masach)
       : await sachService.find({});
 
-    const contentPath = './app/content.md';
-    const content = fs.readFileSync(contentPath, 'utf-8');
-    if (masach) {
-      documents[0].noidung = content;
-    }
+    // const contentPath = './app/content.md';
+    // const content = fs.readFileSync(contentPath, 'utf-8');
+    // if (masach) {
+    //   documents[0].noidung = content;
+    // }
 
     return res.send(documents);
   } catch (error) {

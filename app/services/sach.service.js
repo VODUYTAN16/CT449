@@ -31,6 +31,7 @@ class SachService {
 
   async create(payload) {
     const book = this.extractSachData(payload);
+
     const result = await this.Sach.findOneAndUpdate(
       book,
       { $set: book },

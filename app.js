@@ -6,8 +6,16 @@ const nhanVienRouter = require('./app/routes/nhanvien.route');
 const auth = require('./app/routes/auth.route');
 const danhMuc = require('./app/routes/danhmuc.route');
 const authenticateToken = require('./app/middleware/auth');
+const uploadRouter = require('./app/routes/uploadRouter');
+const path = require('path');
+const fs = require('fs');
 
 const ApiError = require('./app/middleware/api-error');
+// Tạo thư mục uploads nếu chưa tồn tại
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 
 const app = express();
 app.use(
@@ -31,6 +39,12 @@ app.use(function (req, res, next) {
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to contact book application.' });
 });
+
+// Cho phép truy cập ảnh tĩnh
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Sử dụng route upload
+app.use('/api/upload', uploadRouter);
 
 app.use('/api/docgia', authenticateToken, docGiaRouter);
 app.use('/api/nhanvien', authenticateToken, nhanVienRouter);

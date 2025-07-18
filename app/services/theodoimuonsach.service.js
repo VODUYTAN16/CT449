@@ -9,6 +9,7 @@ class TheoDoiMuonSachService {
     const theoDoiMuonSach = {
       madocgia: payload.madocgia,
       masach: payload.masach,
+      manv: payload.manv,
       ngaymuon: payload.ngaymuon,
       ngaytra: payload.ngaytra,
       hantra: payload.hantra,

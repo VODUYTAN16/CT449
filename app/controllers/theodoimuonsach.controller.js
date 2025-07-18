@@ -12,7 +12,8 @@ exports.create = async (req, res, next) => {
     const { masach } = req.body;
     const id = req.user.id;
     const madocgia = req.user.madocgia;
-    if (!madocgia) return next(new ApiError(400, 'Không tìm thấy người dùng'));
+    if (!madocgia)
+      return next(new ApiError(400, 'Admin can not register to borrow book!'));
     const document = await theoDoiMuonSach.create({
       masach,
       madocgia,
@@ -48,11 +49,12 @@ exports.update = async (req, res, next) => {
     const theoDoiMuonSach = new TheoDoiMuonSachService(MongoDB.client);
     const sach = new SachService(MongoDB.client);
     const { trangthai, ngaytra, phiphat, ngaymuon, hantra } = req.body;
+    const manv = req.user.manv;
     console.log(req.params.id, trangthai, ngaytra, phiphat);
     if (!trangthai) {
       return next(new ApiError(404, 'Trạng thái không được bỏ trống'));
     }
-    await theoDoiMuonSach.updateFeature(req.params.id, { trangthai });
+    await theoDoiMuonSach.updateFeature(req.params.id, { trangthai, manv });
     // const ttMuonSach = await theoDoiMuonSach.find({
     //   _id: ObjectId.isValid(req.params.id) ? new ObjectId(req.params.id) : null,
     // });
