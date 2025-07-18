@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import Discover from '@/components/Discover.vue';
+import Discover from '@/views/Discover.vue';
 import Category from '@/components/Category.vue';
-import Borrowed from '@/components/Borrowed.vue';
-import BookDetail from '@/components/BookDetail.vue';
-import AddBook from '@/components/AddBook.vue';
+import Borrowed from '@/views/Borrowed.vue';
+import BookDetail from '@/views/BookDetail.vue';
+import AddBook from '@/views/AddBook.vue';
 import BookPage from '@/components/BookPage.vue';
 import RegisterOrLogin from '@/components/RegisterOrLogin.vue';
 import Login from '@/components/LeafFall.vue';
-import UserManagement from '@/components/UserManagement.vue';
+import UserManagement from '@/views/UserManagement.vue';
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -31,7 +31,7 @@ const router = createRouter({
       component: AddBook,
     },
     {
-      path: '/book-page',
+      path: '/account',
       component: UserManagement,
     },
     {

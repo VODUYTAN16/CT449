@@ -195,8 +195,8 @@
 <script setup>
 import { reactive, ref, onMounted } from 'vue';
 import { useRoute, onBeforeRouteUpdate } from 'vue-router';
-import BookPage from './BookPage.vue';
-import LeafFall from './LeafFall.vue';
+import BookPage from '../components/BookPage.vue';
+import LeafFall from '../components/LeafFall.vue';
 import { _fetch_Book_Detail, _borrow_book } from '../service/service';
 import api from '../axios.js';
 

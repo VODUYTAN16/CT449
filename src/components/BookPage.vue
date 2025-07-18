@@ -728,19 +728,23 @@ const renderedPages = computed(() => {
   if (!props.book.noidung) return Array(6).fill('');
 
   // Tách nội dung bằng dấu pagebreak nếu có
-  const pageBreaks = props.book.noidung.split('<!-- pagebreak -->');
+  // const pageBreaks = props.book.noidung.split('<!-- pagebreak -->');
 
-  // Nếu có đủ 6 phần từ pagebreak
-  if (pageBreaks.length >= 6) {
-    return pageBreaks
-      .slice(0, 6)
-      .map((content) => marked.parse(content.trim()));
-  }
+  // // Nếu có đủ 6 phần từ pagebreak
+  // if (pageBreaks.length >= 6) {
+  //   return pageBreaks
+  //     .slice(0, 6)
+  //     .map((content) => marked.parse(content.trim()));
+  // }
 
   // Chia nội dung theo từ nếu không có pagebreak
   const pages = splitContentByWords(props.book.noidung, 6);
+  console.log(pages);
 
-  return pages.map((content) => (content ? marked.parse(content.trim()) : ''));
+  return pages.map((content) => {
+    console.log(content);
+    return content ? marked.parse(content.trim()) : content;
+  });
 });
 onMounted(() => {
   // const myModal = document.getElementById('bookcontent');

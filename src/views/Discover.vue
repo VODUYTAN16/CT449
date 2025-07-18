@@ -49,8 +49,8 @@
 
 <script setup>
 // import BookDetail from './BookDetail.vue';
-import BookList from './BookList.vue';
-import LeafFall from './LeafFall.vue';
+import BookList from '../components/BookList.vue';
+import LeafFall from '../components/LeafFall.vue';
 import { onMounted, ref } from 'vue';
 import { _fetch_Book_List, _fetch_Category } from '../service/service';
 

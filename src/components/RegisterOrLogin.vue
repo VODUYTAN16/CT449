@@ -145,7 +145,11 @@
           </label>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100" :disabled="loading">
+        <button
+          type="submit"
+          class="btn btn-primary w-100 btn-gradient"
+          :disabled="loading"
+        >
           <span v-if="loading" class="spinner-border spinner-border-sm"></span>
           <span v-else>{{ isLogin ? 'Sign In' : 'Sign Up' }}</span>
         </button>
@@ -157,7 +161,7 @@
         </p>
 
         <!-- Thông báo -->
-        <div
+        <!-- <div
           v-if="message"
           :class="[
             'mt-3',
@@ -166,7 +170,7 @@
           ]"
         >
           {{ message }}
-        </div>
+        </div> -->
       </form>
     </div>
   </div>
@@ -271,6 +275,18 @@ const toggleForm = () => {
 </script>
 
 <style scoped>
+.btn-gradient {
+  background: linear-gradient(135deg, #4f46e5, #ec4899);
+  color: white;
+  border: none;
+  border-radius: 2rem;
+  transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+}
 .auth-container {
   margin: auto;
   overflow: hidden;

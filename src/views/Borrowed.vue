@@ -46,7 +46,7 @@
               <th>Return Date</th>
               <th>Status</th>
               <th>Penalty Fee</th>
-              <th width="120">Actions</th>
+              <th width="120" v-if="currentUser.role == 'admin'">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -77,7 +77,7 @@
                 <span v-else>--</span>
               </td>
 
-              <td>
+              <td v-if="currentUser.role == 'admin'">
                 <button
                   v-if="item.trangthai === 1 || item.trangthai === 0"
                   @click="handleReturnBook(item._id)"
@@ -149,7 +149,11 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { _borrow_history, _update_borrow_status } from '@/service/service';
+import {
+  _borrow_history,
+  _update_borrow_status,
+  _fetch_current_account,
+} from '@/service/service';
 
 // Trạng thái mượn
 const STATUS = {
@@ -159,7 +163,7 @@ const STATUS = {
   REQUESTED: 3,
   LOST: 4,
 };
-
+const currentUser = ref({});
 // State
 const borrowHistory = ref([]);
 const isLoading = ref(true);
@@ -323,7 +327,7 @@ const handleReturnBook = async (id) => {
 const handleLostBook = async (id) => {
   if (
     !confirm(
-      'Xác nhận mất sách? Sẽ tính phí phạt bằng giá sách cộng phí quá hạn (nếu có).'
+      'Confirm book loss? A penalty will be charged equal to the book price plus any overdue fee (if applicable).'
     )
   )
     return;
@@ -360,7 +364,7 @@ const handleLostBook = async (id) => {
     item.phiphat = totalFee;
 
     alert(
-      `Đã xử lý mất sách. Tổng phí: ${totalFee.toLocaleString()} VND (Giá sách: ${bookPrice.toLocaleString()} VND, phí trễ: ${overdueFee.toLocaleString()} VND)`
+      `Book loss processed. Total fee: ${totalFee.toLocaleString()} VND (Book price: ${bookPrice.toLocaleString()} VND, Overdue fee: ${overdueFee.toLocaleString()} VND)`
     );
   } catch (err) {
     console.error('Xử lý mất sách thất bại:', err);
@@ -387,7 +391,13 @@ const nextPage = () =>
 // Load dữ liệu khi mounted
 onMounted(async () => {
   try {
-    const res = await _borrow_history();
+    currentUser.value = await _fetch_current_account();
+    let res = [];
+    if (currentUser.value.role == 'admin') {
+      res = await _borrow_history();
+    } else {
+      res = await _borrow_history(currentUser.value.madocgia);
+    }
     borrowHistory.value = res;
     checkAndUpdateOverdue();
   } catch (error) {

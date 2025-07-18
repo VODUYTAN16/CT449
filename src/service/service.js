@@ -17,6 +17,17 @@ export async function _fetch_Category() {
   return res.data;
 }
 
+export async function _fetch_() {
+  const res = await api.get('/api/nhanvien/category');
+  return res.data;
+}
+
+//nxb
+export async function _fetch_nxb() {
+  const res = await api.get('/api/nhanvien/nxb');
+  return res.data;
+}
+
 export async function _fetch_Book_Detail(masach) {
   const response = await api.get('/api/docgia/books/search?masach=' + masach);
   return response.data[0];
@@ -31,15 +42,23 @@ export async function _update_book(id, payload) {
 //auth
 export async function _fetch_staffs() {
   const response = await api.get('/api/nhanvien/staffs');
-  return response.data;
+  return response.data.reverse();
 }
 
 export async function _fetch_users() {
   const response = await api.get('/api/nhanvien/users');
-  return response.data;
+  return response.data.reverse();
 }
 
-export async function _fetch_current_account() {}
+export async function _fetch_current_account() {
+  try {
+    const res = await api.post('/api/auth/verify-token');
+    console.log(res.data.user);
+    return res.data?.user;
+  } catch (error) {
+    console.error('Error get current ', error);
+  }
+}
 
 export async function _register(registerForm, role) {
   try {
@@ -87,8 +106,13 @@ export async function _updateActor(payload, role) {
 }
 
 //borow
-export async function _borrow_history(registerForm, role) {
-  const response = await api.get('/api/nhanvien/borrow', registerForm);
+export async function _borrow_history(ma) {
+  let response = [];
+  if (ma) {
+    response = await api.get(`/api/nhanvien/borrow?madocgia=${ma}`);
+  } else {
+    response = await api.get('/api/nhanvien/borrow');
+  }
   console.log(response.data);
   return response.data.reverse();
 }

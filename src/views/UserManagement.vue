@@ -2,20 +2,20 @@
   <div class="container user-management">
     <div class="box"></div>
     <div class="sidebar">
-      <h2>👥 Quản Lý Người Dùng</h2>
+      <h2>👥 User Management</h2>
 
-      <!-- Bộ lọc và tìm kiếm -->
+      <!-- Filter and Search -->
       <div class="d-flex align-items-center mb-3">
         <select v-model="role" class="form-select w-auto me-2">
-          <option value="user">Độc giả</option>
-          <option value="admin">Nhân viên</option>
+          <option value="user">Reader</option>
+          <option value="admin">Staff</option>
         </select>
 
         <input
           v-model="searchQuery"
           type="text"
           class="form-control w-50"
-          placeholder="Tìm theo tên..."
+          placeholder="Search by name..."
         />
 
         <!-- Button trigger modal -->
@@ -26,11 +26,11 @@
           data-bs-target="#exampleModal"
           @click="openForm"
         >
-          ➕ Thêm {{ role }}
+          ➕ Add {{ role }}
         </button>
       </div>
 
-      <!-- Bảng -->
+      <!-- Table -->
       <div class="table-responsive">
         <table
           class="table table-hover align-middle table-striped table-bordered custom-table"
@@ -38,12 +38,12 @@
           <thead class="table-success">
             <tr>
               <th class="text-center">#</th>
-              <th>Họ Tên</th>
-              <th>Ngày Sinh</th>
-              <th>Phái</th>
-              <th>Điện Thoại</th>
-              <th>Địa Chỉ</th>
-              <th class="text-center">Thao Tác</th>
+              <th>Full Name</th>
+              <th>Date of Birth</th>
+              <th>Gender</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th class="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -59,7 +59,7 @@
               <td>{{ item.dienthoai }}</td>
               <td>{{ item.diachi }}</td>
               <td class="text-center">
-                <!-- Button trigger modal -->
+                <!-- Edit Button -->
                 <button
                   type="button"
                   class="btn btn-sm btn-outline-warning me-1"
@@ -67,13 +67,14 @@
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                 >
-                  ✏️ Sửa
+                  ✏️ Edit
                 </button>
+                <!-- Delete Button -->
                 <button
                   class="btn btn-sm btn-outline-danger"
                   @click="deleteUser(item)"
                 >
-                  🗑️ Xoá
+                  🗑️ Delete
                 </button>
               </td>
             </tr>
@@ -81,7 +82,7 @@
         </table>
       </div>
 
-      <!-- Phân trang -->
+      <!-- Pagination -->
       <div class="d-flex justify-content-between align-items-center mt-3">
         <small class="text-muted">
           Displaying {{ showingFrom }}–{{ showingTo }} out of
@@ -125,8 +126,8 @@
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title" id="exampleModalLabel">
-                {{ editMode ? '✏️ Sửa' : '➕ Thêm' }}
-                {{ role === 'user' ? 'Độc Giả' : 'Nhân Viên' }}
+                {{ editMode ? '✏️ Edit' : '➕ Add' }}
+                {{ role === 'user' ? 'Reader' : 'Staff' }}
               </h4>
               <button
                 type="button"
@@ -139,17 +140,17 @@
               <form @submit.prevent="submitForm" class="p-1">
                 <div class="row g-3">
                   <div class="col-md-6" v-if="role === 'user'">
-                    <label class="form-label">Họ lót</label>
+                    <label class="form-label">Middle Name</label>
                     <input class="form-control" v-model="form.holot" required />
                   </div>
 
                   <div class="col-md-6" v-if="role === 'user'">
-                    <label class="form-label">Tên</label>
+                    <label class="form-label">First Name</label>
                     <input class="form-control" v-model="form.ten" required />
                   </div>
 
                   <div class="col-md-12" v-if="role === 'admin'">
-                    <label class="form-label">Họ tên nhân viên</label>
+                    <label class="form-label">Staff Full Name</label>
                     <input
                       class="form-control"
                       v-model="form.hotennv"
@@ -158,7 +159,7 @@
                   </div>
 
                   <div class="col-md-6">
-                    <label class="form-label">Điện thoại</label>
+                    <label class="form-label">Phone</label>
                     <input
                       class="form-control"
                       v-model="form.dienthoai"
@@ -167,7 +168,7 @@
                   </div>
 
                   <div class="col-md-6">
-                    <label class="form-label">Địa chỉ</label>
+                    <label class="form-label">Address</label>
                     <input
                       class="form-control"
                       v-model="form.diachi"
@@ -175,7 +176,7 @@
                     />
                   </div>
                   <div class="col-md-6">
-                    <label class="form-label">Phái</label>
+                    <label class="form-label">Gender</label>
                     <select v-model="form.phai" class="form-select" required>
                       <option value="">-- Select Gender --</option>
                       <option value="Male">Male</option>
@@ -184,7 +185,7 @@
                   </div>
 
                   <div class="col-md-6">
-                    <label class="form-label">Ngày sinh</label>
+                    <label class="form-label">Date of Birth</label>
                     <input
                       type="date"
                       class="form-control"
@@ -193,9 +194,9 @@
                     />
                   </div>
 
-                  <!-- Hiển thị chỉ khi đang thêm mới -->
+                  <!-- Only show when adding -->
                   <div class="col-md-6" v-if="!editMode">
-                    <label class="form-label">Mật khẩu</label>
+                    <label class="form-label">Password</label>
                     <div class="position-relative">
                       <input
                         :type="showPassword ? 'text' : 'password'"
@@ -213,7 +214,7 @@
                   </div>
 
                   <div class="col-md-6" v-if="!editMode">
-                    <label class="form-label">Nhập lại mật khẩu</label>
+                    <label class="form-label">Confirm Password</label>
                     <div class="position-relative">
                       <input
                         type="password"
@@ -226,14 +227,14 @@
 
                   <div class="col-12 text-end mt-3">
                     <button class="btn btn-success me-2" type="submit">
-                      Lưu
+                      Save
                     </button>
                     <button
                       type="button"
                       class="btn btn-secondary"
                       data-bs-dismiss="modal"
                     >
-                      Huỷ
+                      Cancel
                     </button>
                   </div>
                 </div>

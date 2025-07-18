@@ -3,8 +3,8 @@ import Navigation from '../components/Navigation.vue';
 import ChatBot from '../components/ChatBot.vue';
 import RegisterOrLogin from '../components/RegisterOrLogin.vue';
 import { ref } from 'vue';
-import api from '../axios';
 import { onMounted } from 'vue';
+import { _fetch_current_account } from '@/service/service';
 
 const role = ref('');
 const isAuthenticated = ref(false);
@@ -12,8 +12,9 @@ onMounted(async () => {
   try {
     const token = localStorage.getItem('token');
     if (token) {
-      const res = await api.post('/api/auth/verify-token');
-      role.value = res.data.user?.role;
+      const res = await _fetch_current_account();
+      console.log(res);
+      role.value = res.role;
       console.log(res);
       isAuthenticated.value = true;
     }
