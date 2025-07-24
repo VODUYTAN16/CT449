@@ -61,7 +61,7 @@
       </label>
     </div>
     <div class="form-group">
-      <button class="btn btn-primary">Lưu</button>
+      <button class="btn btn-primary" type="submit">Lưu</button>
       <button
         v-if="contactLocal._id"
         type="button"
