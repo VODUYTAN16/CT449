@@ -72,7 +72,7 @@
               </td>
               <td>
                 <span v-if="item.phiphat > 0"
-                  >{{ item.phiphat.toLocaleString() }} vnd</span
+                  >{{ item.phiphat.toLocaleString() }}.000 vnd</span
                 >
                 <span v-else>--</span>
               </td>
@@ -231,6 +231,17 @@ const visiblePages = computed(() => {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 });
 
+const checkBorrowedBooks = (history, cur_borrow) => {
+  console.log(history);
+  const booksCount = history.filter(
+    (borrow) =>
+      borrow.madocgia == cur_borrow.madocgia &&
+      borrow.trangthai === STATUS.BORROWING
+  );
+  console.log(booksCount);
+  return booksCount.length > 2;
+};
+
 // Cập nhật trạng thái nếu quá hạn hoặc có phí phạt
 const checkAndUpdateOverdue = () => {
   const today = new Date();
@@ -261,7 +272,7 @@ const checkAndUpdateOverdue = () => {
 
 // Duyệt mượn sách
 const handleApproveRequest = async (id) => {
-  if (!confirm('Are you sure?')) return;
+  if (!confirm('Do you want to borrow this book?')) return;
   const item = borrowHistory.value.find((i) => i._id === id);
   if (!item) return;
 
@@ -272,6 +283,14 @@ const handleApproveRequest = async (id) => {
   const dueDateStr = dueDate.toISOString().split('T')[0];
 
   try {
+    if (checkBorrowedBooks(borrowHistory.value, item)) {
+      if (
+        !confirm(
+          'You have exceeded the allowed limit of 3 borrowed books. Do you want to continue?'
+        )
+      )
+        return;
+    }
     await _update_borrow_status(id, {
       trangthai: STATUS.BORROWING,
       ngaymuon: borrowDateStr,
@@ -289,7 +308,7 @@ const handleApproveRequest = async (id) => {
 
 // Trả sách
 const handleReturnBook = async (id) => {
-  if (!confirm('Are you sure?')) return;
+  if (!confirm('Are you sure to return book?')) return;
 
   const item = borrowHistory.value.find((i) => i._id === id);
   if (!item) return;
@@ -343,7 +362,7 @@ const handleLostBook = async (id) => {
   let overdueFee = 0;
   if (today > dueDate) {
     const diffDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
-    overdueFee = diffDays * 10000;
+    overdueFee = diffDays * 10;
   }
 
   // Lấy giá sách
@@ -364,7 +383,7 @@ const handleLostBook = async (id) => {
     item.phiphat = totalFee;
 
     alert(
-      `Book loss processed. Total fee: ${totalFee.toLocaleString()} VND (Book price: ${bookPrice.toLocaleString()} VND, Overdue fee: ${overdueFee.toLocaleString()} VND)`
+      `Book loss processed. Total fee: ${totalFee.toLocaleString()}.000 VND (Book price: ${bookPrice.toLocaleString()}.000 VND, Overdue fee: ${overdueFee.toLocaleString()} VND)`
     );
   } catch (err) {
     console.error('Xử lý mất sách thất bại:', err);
@@ -399,6 +418,7 @@ onMounted(async () => {
       res = await _borrow_history(currentUser.value.madocgia);
     }
     borrowHistory.value = res;
+    console.log(borrowHistory.value);
     checkAndUpdateOverdue();
   } catch (error) {
     console.error('Failed to load borrow history:', error);

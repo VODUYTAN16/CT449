@@ -23,21 +23,21 @@ api.interceptors.request.use((config) => {
 });
 
 // Xử lý khi có lỗi từ server
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 403 || error.response?.status === 401) {
-      console.warn('Token hết hạn hoặc không hợp lệ');
+// api.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     if (error.response?.status === 403 || error.response?.status === 401) {
+//       console.warn('Token hết hạn hoặc không hợp lệ');
 
-      // Xoá token cũ (nếu cần)
-      localStorage.removeItem('token');
+//       // Xoá token cũ (nếu cần)
+//       localStorage.removeItem('token');
 
-      // Chuyển hướng đến trang đăng nhập
-      router.push('/login');
-    }
+//       // Chuyển hướng đến trang đăng nhập
+//       router.push('/login');
+//     }
 
-    return Promise.reject(error);
-  }
-);
+//     return Promise.reject(error);
+//   }
+// );
 
 export default api;

@@ -233,6 +233,10 @@ const submitLogin = async () => {
 
     const res = await api.post(endpoint, loginForm.value);
     console.log(res.data);
+    if (res.data.status == 401) {
+      alert('Account Not Found!');
+    }
+    console.log(res);
     localStorage.setItem('token', res.data.token);
     messageType.value = 'success';
     message.value = 'Đăng nhập thành công';
@@ -256,7 +260,7 @@ const submitRegister = async () => {
       return;
     }
 
-    const res = await _register(registerForm.value, 'admin');
+    const res = await _register(registerForm.value, 'user');
     messageType.value = 'success';
     message.value = 'Đăng ký thành công! Vui lòng đăng nhập.';
     isLogin.value = true;

@@ -2,22 +2,25 @@ import api from '@/axios';
 
 //book
 export async function _fetch_Book_List(madm) {
-  if (madm) {
-    console.log(madm);
-    const response = await api.get(`/api/nhanvien/category?madm=${madm}`);
-    console.log(response.data[0].sach_info);
-    return response.data[0].sach_info;
+  try {
+    if (madm) {
+      const response = await api.get(`/api/nhanvien/category?madm=${madm}`);
+      const books = response.data[0].sach_info || [];
+      // Chỉ lấy sách chưa bị xóa
+      return books.filter((book) => book.daxoa !== true);
+    }
+
+    const response = await api.get('/api/docgia/books');
+    const books = response.data || [];
+    // Chỉ lấy sách chưa bị xóa
+    return books.filter((book) => book.daxoa !== true).reverse();
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách sách:', error);
+    return [];
   }
-  const response = await api.get('/api/docgia/books');
-  return response.data;
 }
 
 export async function _fetch_Category() {
-  const res = await api.get('/api/nhanvien/category');
-  return res.data;
-}
-
-export async function _fetch_() {
   const res = await api.get('/api/nhanvien/category');
   return res.data;
 }
@@ -35,8 +38,14 @@ export async function _fetch_Book_Detail(masach) {
 
 //Cập nhật sách
 export async function _update_book(id, payload) {
-  const response = await api.put(`/api/docgia/books/${id}`);
+  const response = await api.put(`/api/nhanvien/books/${id}`);
   return response.data[0];
+}
+
+export async function _delete_book(book) {
+  const payload = { daxoa: true };
+  const response = await api.put(`/api/nhanvien/books/${book.masach}`, payload);
+  return response;
 }
 
 //auth
@@ -88,6 +97,26 @@ export async function _deleteActor(ma, role) {
   }
 }
 
+export async function _unlockAcount(ma, role) {
+  try {
+    let response = [];
+    if (role == 'admin') {
+      response = await api.put(`/api/nhanvien/staffs`, {
+        manv: ma,
+        daxoa: false,
+      });
+    } else {
+      response = await api.put(`/api/nhanvien/users`, {
+        madocgia: ma,
+        daxoa: false,
+      });
+    }
+    return response;
+  } catch (error) {
+    console.error('Error delete user', error);
+  }
+}
+
 export async function _updateActor(payload, role) {
   console.log(payload, role);
   try {
@@ -128,3 +157,5 @@ export async function _update_borrow_status(id, data) {
   console.log(response.data);
   return response.data;
 }
+
+export async function _check_borrowed_books(params) {}

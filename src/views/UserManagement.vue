@@ -71,10 +71,19 @@
                 </button>
                 <!-- Delete Button -->
                 <button
+                  v-if="item.daxoa != true"
                   class="btn btn-sm btn-outline-danger"
                   @click="deleteUser(item)"
                 >
-                  🗑️ Delete
+                  <i class="bx bx-lock"></i> Lock
+                </button>
+
+                <button
+                  v-if="item.daxoa == true"
+                  class="btn btn-sm btn-outline-danger"
+                  @click="unlockUser(item)"
+                >
+                  <i class="bx bx-lock-open-alt"></i> Unlock
                 </button>
               </td>
             </tr>
@@ -255,6 +264,7 @@ import {
   _register,
   _updateActor,
   _deleteActor,
+  _unlockAcount,
 } from '@/service/service';
 
 const showPassword = ref(false);
@@ -308,12 +318,12 @@ const loadData = async () => {
 const filteredList = computed(() => {
   return userList.value.filter((u) => {
     const name = role.value === 'user' ? u.holot + ' ' + u.ten : u.hotennv;
-    return name.toLowerCase().includes(searchQuery.value.toLowerCase());
+    return name?.toLowerCase().includes(searchQuery.value?.toLowerCase());
   });
 });
 
 const currentPage = ref(1);
-const itemsPerPage = 5;
+const itemsPerPage = 10;
 
 const totalPages = computed(() =>
   Math.ceil(filteredList.value.length / itemsPerPage)
@@ -427,12 +437,27 @@ const editUser = (item) => {
 
 const deleteUser = async (item) => {
   const ma = role.value === 'user' ? item.madocgia : item.manv;
-  if (confirm(`Xoá ${role.value} ${ma}?`)) {
+  const hoten = item.holot ? item.holot + ' ' + item.ten : item.hotennv;
+  if (confirm(`Lock ${role.value} ${hoten}?`)) {
     const res = await _deleteActor(ma, role.value);
     if (res) {
       alert('Delete Account successfully!');
     } else {
       alert('Error delete Account!');
+    }
+    await loadData();
+  }
+};
+
+const unlockUser = async (item) => {
+  const ma = role.value === 'user' ? item.madocgia : item.manv;
+  const hoten = item.holot ? item.holot + ' ' + item.ten : item.hotennv;
+  if (confirm(`Unlock ${role.value} ${hoten}?`)) {
+    const res = await _unlockAcount(ma, role.value);
+    if (res) {
+      alert('Unlock Account successfully!');
+    } else {
+      alert('Error Unlock Account!');
     }
     await loadData();
   }

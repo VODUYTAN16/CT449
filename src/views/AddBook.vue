@@ -13,16 +13,7 @@
             <input
               v-model="book.tensach"
               class="form-control modern-input"
-              required
-            />
-          </div>
-
-          <!-- Book Code -->
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">🔖 Book Code *</label>
-            <input
-              v-model="book.masach"
-              class="form-control modern-input"
+              placeholder="Title of book"
               required
             />
           </div>
@@ -33,6 +24,7 @@
             <input
               v-model="book.tacgia"
               class="form-control modern-input"
+              placeholder="Name of Author"
               required
             />
           </div>
@@ -44,6 +36,8 @@
               v-model.number="book.namxuatban"
               type="number"
               class="form-control modern-input"
+              min="1600"
+              placeholder="Publish year"
               required
             />
           </div>
@@ -84,6 +78,7 @@
             <input
               type="number"
               v-model.number="book.dongia"
+              min="0"
               class="form-control modern-input"
               required
             />
@@ -94,6 +89,7 @@
             <label class="form-label fw-semibold">📦 Quantity *</label>
             <input
               type="number"
+              min="1"
               v-model.number="book.soquyen"
               class="form-control modern-input"
               required
@@ -105,6 +101,7 @@
             <label class="form-label fw-semibold">📄 Pages *</label>
             <input
               type="number"
+              min="0"
               v-model.number="book.sotrang"
               class="form-control modern-input"
               required
@@ -136,6 +133,7 @@
             <textarea
               v-model="book.mota"
               class="form-control modern-input"
+              placeholder="Discription of book"
               rows="3"
             ></textarea>
           </div>
