@@ -31,8 +31,10 @@ class NhanVienService {
   }
 
   async softDelete(manv) {
+    const parsedId = !isNaN(manv) ? Number(manv) : manv;
+
     const result = await this.NhanVien.findOneAndUpdate(
-      { manv: manv },
+      { manv: parsedId },
       { $set: { daxoa: true } },
       { returnDocument: 'after' }
     );

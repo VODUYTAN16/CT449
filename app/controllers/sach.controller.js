@@ -33,13 +33,13 @@ exports.update = async (req, res, next) => {
 
   try {
     const sachService = new SachService(MongoDB.client);
-    const document = await sachService.update(req.params.id, req.body);
+    const document = await sachService.update(req.params.masach, req.body);
     if (!document) {
       return next(new ApiError(404, 'Không tìm thấy sách'));
     }
     return res.send({ message: 'Sách đã được cập nhật thành công' });
   } catch (error) {
-    return next(new ApiError(500, `Lỗi cập nhật sách id=${req.params.id}`));
+    return next(new ApiError(500, `Lỗi cập nhật sách id=${req.params.masach}`));
   }
 };
 
@@ -50,6 +50,9 @@ exports.create = async (req, res, next) => {
 
   try {
     const sachService = new SachService(MongoDB.client);
+    const sachs = await sachService.find({});
+    const masach = sachs.length + 1;
+    req.body.masach = masach;
     const document = await sachService.create(req.body);
     return res.send(document);
   } catch (error) {

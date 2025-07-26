@@ -19,6 +19,7 @@ class SachService {
       mota: payload.mota,
       sotrang: payload.sotrang,
       noidung: payload.noidung,
+      daxoa: payload.daxoa,
     };
 
     // remove undefined fields
@@ -62,9 +63,17 @@ class SachService {
   }
 
   async findByTitle(masach) {
-    return await this.find({
-      masach: { $regex: new RegExp(masach), $options: 'i' },
-    });
+    const isNumeric = !isNaN(masach);
+
+    if (isNumeric) {
+      // Tìm chính xác nếu là số
+      return await this.find({ masach: Number(masach) });
+    } else {
+      // Tìm theo chuỗi nếu là chữ
+      return await this.find({
+        masach: { $regex: new RegExp(masach), $options: 'i' },
+      });
+    }
   }
 
   async findById(id) {
@@ -74,8 +83,10 @@ class SachService {
   }
 
   async update(masach, payload) {
+    const parsedId = !isNaN(masach) ? Number(masach) : masach;
+
     const filter = {
-      masach: masach,
+      masach: parsedId,
     };
     const update = this.extractSachData(payload);
     const result = await this.Sach.findOneAndUpdate(
@@ -87,15 +98,19 @@ class SachService {
   }
 
   async incSLSach(masach) {
+    const parsedId = !isNaN(masach) ? Number(masach) : masach;
+
     return await this.Sach.updateOne(
-      { masach: masach },
+      { masach: parsedId },
       { $inc: { soquyen: 1 } }
     );
   }
 
   async decSLSach(masach) {
+    const parsedId = !isNaN(masach) ? Number(masach) : masach;
+
     return await this.Sach.updateOne(
-      { masach: masach },
+      { masach: parsedId },
       { $inc: { soquyen: -1 } }
     );
   }

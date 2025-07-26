@@ -83,8 +83,9 @@ class TheoDoiMuonSachService {
   }
 
   async findByUserId(madocgia) {
+    const parsedId = !isNaN(madocgia) ? Number(madocgia) : madocgia;
     return await this.find({
-      madocgia: madocgia,
+      madocgia: parsedId,
     });
   }
 

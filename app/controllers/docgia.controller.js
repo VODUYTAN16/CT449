@@ -16,8 +16,9 @@ exports.userLogin = async (req, res, next) => {
     const docGiaService = new DocGiaService(MongoDB.client);
     const user = await docGiaService.findUserByPhone(dienthoai);
 
-    if (!user) {
-      return next(new ApiError(401, 'Số điện thoại không tồn tại'));
+    if (!user || user.daxoa) {
+      return res.send({ message: 'Account Not Found!', status: 401 });
+      // return next(new ApiError(401, 'Số điện thoại không tồn tại'));
     }
 
     const isMatch = await bcrypt.compare(matkhau, user.matkhau);
@@ -91,9 +92,8 @@ exports.findAll = async (req, res, next) => {
     if (dienthoai) {
       documents = await docGiaService.findUserByPhone(dienthoai);
     } else {
-      documents = await docGiaService.find({
-        $or: [{ daxoa: false }, { daxoa: { $exists: false } }],
-      });
+      documents = await docGiaService.find({});
+      // $or: [{ daxoa: false }, { daxoa: { $exists: false } }],
     }
 
     return res.send(documents);

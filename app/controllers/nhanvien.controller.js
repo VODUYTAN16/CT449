@@ -16,7 +16,7 @@ exports.adminLogin = async (req, res, next) => {
     const nhanVienService = new NhanVienService(MongoDB.client);
     const admin = await nhanVienService.findAdminByPhone(dienthoai);
 
-    if (!admin) {
+    if (!admin || admin.daxoa) {
       return next(new ApiError(401, 'Số điện thoại không tồn tại'));
     }
 

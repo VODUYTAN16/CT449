@@ -21,20 +21,19 @@ router
   .route('/users')
   .get(docgiaController.findAll)
   .delete(docgiaController.delete)
-  .put(docgiaController.update);
+  .put(docgiaController.update)
+  .post(docgiaController.create);
 
 //
 router.route('/books').post(sachController.create); // Thêm sách mới
 
 // Cập nhật thông tin sách
-router.route('/books/:id').put(sachController.update);
+router.route('/books/:masach').put(sachController.update);
 
 // Quản lý mượn sách (cập nhật trạng thái)
 router.route('/borrow/:id').put(theoDoiMuonSachController.update);
 // Lấy lịch sử mượn sách
 router.route('/borrow').get(theoDoiMuonSachController.history);
-//user
-router.route('/users').post(docgiaController.create);
 
 //
 router

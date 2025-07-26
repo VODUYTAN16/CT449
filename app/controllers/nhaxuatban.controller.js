@@ -9,6 +9,9 @@ exports.create = async (req, res, next) => {
 
   try {
     const nhaXuatBanService = new NhaXuatBanService(MongoDB.client);
+    const nxbs = await nhaXuatBanService.find({});
+    const manxb = nxbs.length + 1;
+    req.body.manxb = manxb;
     const document = await nhaXuatBanService.create(req.body);
     return res.send(document);
   } catch (error) {

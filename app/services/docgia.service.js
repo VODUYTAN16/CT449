@@ -42,8 +42,10 @@ class DocGiaService {
   }
 
   async softDelete(madocgia) {
+    const parsedId = !isNaN(madocgia) ? Number(madocgia) : madocgia;
+
     const result = await this.DocGia.findOneAndUpdate(
-      { madocgia: madocgia },
+      { madocgia: parsedId },
       { $set: { daxoa: true } },
       { returnDocument: 'after' }
     );
