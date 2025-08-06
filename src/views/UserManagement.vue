@@ -87,6 +87,11 @@
                 </button>
               </td>
             </tr>
+            <tr v-if="paginatedData.length === 0">
+              <td :colspan="9" class="text-center text-danger fw-bold py-3">
+                🔍 Found Nothing!
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
