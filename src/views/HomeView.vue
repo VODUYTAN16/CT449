@@ -29,16 +29,26 @@ onMounted(async () => {
 <template>
   <main style="overflow-x: hidden">
     <div v-if="isAuthenticated">
-      <div class="row" style="position: relative">
-        <div class="col-2 p-0 m-0"><Navigation :role="role"></Navigation></div>
+      <div style="position: relative" class="d-flex">
+        <div class="p-0 m-0"><Navigation :role="role"></Navigation></div>
         <div
-          class="col p-0 m-0"
-          style="overflow-y: scroll !important; max-height: 100vh"
+          class="p-0 m-0"
+          style="
+            overflow-y: scroll !important;
+            max-height: 100vh;
+            width: 100%;
+            max-width: 100vw;
+          "
         >
+          <!-- <div class="box"></div> -->
+
           <router-view></router-view>
         </div>
       </div>
-      <ChatBot style="z-index: 200; position: relative"></ChatBot>
+      <ChatBot
+        v-if="role != 'admin'"
+        style="z-index: 200; position: relative"
+      ></ChatBot>
     </div>
     <div v-else>
       <RegisterOrLogin></RegisterOrLogin>
@@ -49,5 +59,27 @@ onMounted(async () => {
 <style scoped>
 .row {
   background-color: var(--white);
+}
+
+main {
+  position: relative;
+}
+
+.box {
+  z-index: -10;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 95vh;
+  border-end-start-radius: 50px;
+  background-color: var(--sub-bg);
+  transform: translateY(-100%);
+  animation: slideDown 0.8s ease-out forwards;
+}
+
+@keyframes slideDown {
+  to {
+    transform: translateY(0);
+  }
 }
 </style>

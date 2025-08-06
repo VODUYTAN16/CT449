@@ -48,8 +48,8 @@ const titleImageUrl =
   'https://i.pinimg.com/736x/18/c2/96/18c29680423dc8ec13e290b7bd9917a5.jpg';
 
 const messageList = ref([
-  { type: 'text', author: `me`, data: { text: `Tân so handsome!` } },
-  { type: 'text', author: `user1`, data: { text: `Yesssssssss` } },
+  // { type: 'text', author: `me`, data: { text: `Tân so handsome!` } },
+  // { type: 'text', author: `user1`, data: { text: `Yesssssssss` } },
 ]);
 
 const newMessagesCount = ref(0);

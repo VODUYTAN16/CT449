@@ -161,7 +161,7 @@
         </p>
 
         <!-- Thông báo -->
-        <!-- <div
+        <div
           v-if="message"
           :class="[
             'mt-3',
@@ -170,7 +170,7 @@
           ]"
         >
           {{ message }}
-        </div> -->
+        </div>
       </form>
     </div>
   </div>
@@ -232,9 +232,8 @@ const submitLogin = async () => {
       userType.value === 'user' ? '/api/auth/login' : '/api/auth/login-admin';
 
     const res = await api.post(endpoint, loginForm.value);
-    console.log(res.data);
     if (res.data.status == 401) {
-      alert('Account Not Found!');
+      alert(res.data.message);
     }
     console.log(res);
     localStorage.setItem('token', res.data.token);
@@ -261,12 +260,19 @@ const submitRegister = async () => {
     }
 
     const res = await _register(registerForm.value, 'user');
-    messageType.value = 'success';
-    message.value = 'Đăng ký thành công! Vui lòng đăng nhập.';
-    isLogin.value = true;
+    console.log(res);
+    if (res.status != 200) {
+      alert(res.message);
+      messageType.value = 'error';
+      message.value = res.message;
+    } else {
+      messageType.value = 'success';
+      message.value = 'Registration successful! Please log in.';
+      isLogin.value = true;
+    }
   } catch (err) {
     messageType.value = 'error';
-    message.value = 'Đăng ký thất bại. Kiểm tra lại thông tin.';
+    message.value = 'Registration failed. Please check your information.';
   } finally {
     loading.value = false;
   }

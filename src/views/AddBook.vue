@@ -1,9 +1,9 @@
 <template>
   <div class="add-book">
-    <div class="container py-5">
+    <div class="container">
       <div class="card shadow-lg rounded-4 p-4 border-0">
         <h2 class="mb-4 text-center fw-bold text-primary display-6">
-          📚 Add New Book
+          {{ isEdit ? '✏️ Edit Book' : '📚 Add New Book' }}
         </h2>
 
         <form @submit.prevent="submitBook" class="row g-4">
@@ -89,7 +89,7 @@
             <label class="form-label fw-semibold">📦 Quantity *</label>
             <input
               type="number"
-              min="1"
+              min="0"
               v-model.number="book.soquyen"
               class="form-control modern-input"
               required
@@ -159,7 +159,9 @@
                 v-if="loading"
                 class="spinner-border spinner-border-sm"
               ></span>
-              <span v-else>🚀 Add Book</span>
+              <span v-else>{{
+                isEdit ? '💾 Save Changes' : '🚀 Add Book'
+              }}</span>
             </button>
           </div>
 
@@ -181,11 +183,21 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, defineProps } from 'vue';
 import api from '../axios';
 import { marked } from 'marked';
 
 import { _fetch_Category, _fetch_nxb } from '../service/service';
+const props = defineProps({
+  bookData: {
+    type: Object,
+    default: () => ({}),
+  },
+  isEdit: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 const book = reactive({
   masach: '',
@@ -275,15 +287,22 @@ ${text}`,
 onMounted(async () => {
   try {
     const [nxbRes, catRes] = await Promise.all([
-      api.get('/api/nhanvien/nxb'),
-      api.get('/api/nhanvien/category'),
+      await _fetch_nxb(),
+      await _fetch_Category(),
     ]);
-    nxbList.value = nxbRes.data;
-    categoryList.value = catRes.data;
+    nxbList.value = nxbRes;
+    categoryList.value = catRes;
+
+    // Nếu là chỉnh sửa => đổ dữ liệu vào form
+    if (props.isEdit && props.bookData) {
+      Object.assign(book, props.bookData);
+    }
   } catch (error) {
     console.error('Lỗi khi tải dữ liệu:', error);
   }
 });
+
+const emit = defineEmits(['done']);
 
 const submitBook = async () => {
   loading.value = true;
@@ -292,13 +311,23 @@ const submitBook = async () => {
 
   try {
     // Gọi Gemini để chuyển nội dung mô tả hoặc chi tiết thành Markdown
+    console.log(book.noidung);
     const markdownContent = await convertToMarkdown(book.noidung);
     book.noidung = markdownContent;
 
     // Gửi dữ liệu sách
-    await api.post('/api/nhanvien/books', {
-      ...book,
-    });
+    if (props.isEdit) {
+      // Gọi API chỉnh sửa
+      await api.put(`/api/nhanvien/books/${book.masach}`, book);
+      messageType.value = 'success';
+      message.value = '✅ Cập nhật sách thành công!';
+    } else {
+      // Gọi API thêm mới
+      await api.post('/api/nhanvien/books', book);
+      messageType.value = 'success';
+      message.value = '✅ Thêm sách thành công!';
+      resetForm();
+    }
 
     // Gửi nội dung markdown
     // await api.post('/api/nhanvien/contents', {
@@ -310,6 +339,7 @@ const submitBook = async () => {
     messageType.value = 'success';
     message.value = '✅ Thêm sách thành công!';
     resetForm();
+    emit('done');
   } catch (err) {
     console.error('Lỗi thêm sách:', err);
     messageType.value = 'error';
@@ -338,10 +368,6 @@ const resetForm = () => {
 </script>
 
 <style scoped>
-.add-book {
-  background-color: var(--organge);
-  border-radius: 20px;
-}
 .container {
   max-width: 800px;
 }

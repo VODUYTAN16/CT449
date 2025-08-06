@@ -26,7 +26,7 @@
           v-model="searchQuery"
           type="text"
           class="form-control form-control-sm"
-          placeholder="Search by name"
+          placeholder="Find by book title"
           style="width: 250px"
         />
       </form>

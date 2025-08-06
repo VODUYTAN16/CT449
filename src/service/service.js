@@ -51,6 +51,7 @@ export async function _delete_book(book) {
 //auth
 export async function _fetch_staffs() {
   const response = await api.get('/api/nhanvien/staffs');
+  console.log(response);
   return response.data.reverse();
 }
 

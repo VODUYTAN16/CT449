@@ -197,7 +197,12 @@ import { reactive, ref, onMounted } from 'vue';
 import { useRoute, onBeforeRouteUpdate } from 'vue-router';
 import BookPage from '../components/BookPage.vue';
 import LeafFall from '../components/LeafFall.vue';
-import { _fetch_Book_Detail, _borrow_book } from '../service/service';
+import {
+  _fetch_Book_Detail,
+  _borrow_book,
+  _borrow_history,
+  _fetch_current_account,
+} from '../service/service';
 import api from '../axios.js';
 
 // // Data
@@ -230,8 +235,18 @@ const submitForm = async (madocgia, masach) => {
   if (!confirm('Are you sure to borrow this book?')) return;
 
   try {
+    console.log(book.value);
+
+    if (!book.value) {
+      alert('Book not found');
+      return;
+    } else if (book.value.soquyen <= 0) {
+      alert('No copies available for borrowing');
+      return;
+    }
+
     const response = await _borrow_book(madocgia, masach);
-    alert('Borrow book successfully !');
+    alert('Borrow book successfully!');
     closeModal();
     // resetForm();
   } catch (error) {

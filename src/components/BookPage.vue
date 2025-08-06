@@ -38,7 +38,7 @@
                       📖 {{ book.tensach }}
                     </h1>
                     <h5 class="text-secondary mb-3">
-                      Tác giả: {{ book.tacgia }}
+                      Author: {{ book.tacgia }}
                     </h5>
 
                     <!-- Trích dẫn mở đầu -->
@@ -55,17 +55,17 @@
                     <!-- Credit -->
                     <div class="text-muted small mb-4">
                       <p>
-                        Nhà xuất bản:
+                        Publisher:
                         <strong>{{ book.nxb_info?.tennxb }}</strong>
                       </p>
                       <p>
-                        Địa chỉ:
+                        Address:
                         <strong>{{ book.nxb_info?.diachi }}</strong>
                       </p>
                       <p>
-                        Năm xuất bản: <strong>{{ book.namxuatban }}</strong>
+                        Year Published:
+                        <strong>{{ book.namxuatban }}</strong>
                       </p>
-                      <!-- <p>Thiết kế: <strong>Bạn</strong> 💻</p> -->
                     </div>
                   </div>
                   <!-- Nút bắt đầu -->
@@ -694,6 +694,11 @@ const splitContentByWords = (content, pageCount) => {
   const pages = [];
   const words = content.split(/\s+/);
   const wordsPerPage = Math.ceil(words.length / pageCount);
+
+  // Nếu số lượng từ nhỏ hơn 400 thì không cần tách
+  if (words.length < 400) {
+    return [content.trim()];
+  }
 
   let currentPage = 0;
   let startIndex = 0;

@@ -1,5 +1,5 @@
 <template>
-  <div class="container user-management">
+  <div class="user-management">
     <div class="box"></div>
     <div class="sidebar">
       <h2>👥 User Management</h2>
@@ -470,6 +470,8 @@ watch(role, loadData);
 <style scoped>
 .user-management {
   position: relative;
+  margin: 0;
+  padding: 0;
 }
 .box {
   height: 85vh;
@@ -492,14 +494,13 @@ watch(role, loadData);
 
 .custom-table {
   border-collapse: separate;
-  /* border-spacing: 1px; */
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .custom-table thead {
-  background-color: #d1e7dd; /* Màu xanh nhạt */
+  background-color: #d1e7dd;
 }
 
 .custom-table tbody tr:nth-child(odd) {
@@ -515,7 +516,6 @@ watch(role, loadData);
   transition: background-color 0.2s;
 }
 
-/* Viền bảng */
 .custom-table,
 .custom-table th,
 .custom-table td {

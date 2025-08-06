@@ -11,7 +11,9 @@
       </button>
     </div>
 
-    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
+    <div
+      class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 row-cols-xl-5 g-4"
+    >
       <div v-for="(book, index) in displayedBooks" :key="index" class="col">
         <div class="position-relative">
           <router-link
@@ -36,7 +38,7 @@
             v-if="isAdmin"
             @click="deleteBook(book)"
             class="btn btn-danger btn-sm position-absolute me-3"
-            style="top: 5px; right: 5px; z-index: 2"
+            style="top: 5px; left: 5px; z-index: 2"
             title="Xóa sách"
           >
             <i class="bx bx-x"></i>

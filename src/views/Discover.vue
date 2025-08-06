@@ -104,7 +104,10 @@ onMounted(async () => {
 }
 
 .box {
-  position: relative !important;
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 50vh;
   border-end-start-radius: 80px;
   background-color: var(--sub-bg);

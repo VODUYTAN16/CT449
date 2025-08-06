@@ -36,7 +36,7 @@
                 class="card-img-top"
                 alt="Ảnh thể loại"
               />
-              <div class="book-count-badge">{{ category.sosach }} sách</div>
+              <div class="book-count-badge">{{ category.sosach }} books</div>
             </div>
             <div class="card-body">
               <h5 class="card-title">{{ category.tendm }}</h5>
@@ -49,7 +49,7 @@
                 class="btn btn-sm btn-success w-100"
                 @click="viewCategory(category.madm)"
               >
-                Xem chi tiết
+                View details
               </button>
             </div>
           </div>
