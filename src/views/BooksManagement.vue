@@ -72,16 +72,11 @@
                     🗑️
                   </button>
                 </td>
-
-                <!-- <td
-                  v-if="filteredCategories.length == 0 || !filteredCategories"
-                  class="text-center text-muted my-4"
-                >
-                  <i class="bi bi-book" style="font-size: 2rem"></i>
-                  <div class="text-center text-danger fw-bold py-3">
-                    🔍 Found Nothing!
-                  </div>
-                </td> -->
+              </tr>
+              <tr v-if="paginatedBooks.length === 0">
+                <td :colspan="9" class="text-center text-danger fw-bold py-3">
+                  🔍 Found Nothing!
+                </td>
               </tr>
             </tbody>
           </table>
