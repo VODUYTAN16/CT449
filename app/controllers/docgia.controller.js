@@ -23,7 +23,7 @@ exports.userLogin = async (req, res, next) => {
 
     const isMatch = await bcrypt.compare(matkhau, user.matkhau);
     if (!isMatch) {
-      return next(new ApiError(401, 'Mật khẩu không đúng'));
+      return res.send({ message: 'Wrong password!', status: 401 });
     }
 
     console.log('mk: ', isMatch);
@@ -65,7 +65,10 @@ exports.create = async (req, res, next) => {
     const existing = await userService.findUserByPhone(dienthoai);
     console.log(existing);
     if (existing) {
-      return next(new ApiError(409, 'Số điện thoại đã được sử dụng'));
+      return res.send({
+        message: 'Phone number was exist!',
+        status: 400,
+      });
     }
 
     // Hash mật khẩu
@@ -76,7 +79,7 @@ exports.create = async (req, res, next) => {
     req.body.madocgia = madocgia;
 
     const newUser = await userService.createUser(req.body);
-    return res.status(201).send(newUser);
+    return res.status(200).send({ ...newUser, status: 200 });
   } catch (error) {
     return next(
       new ApiError(500, error.message || 'Đã xảy ra lỗi khi tạo độc giả')

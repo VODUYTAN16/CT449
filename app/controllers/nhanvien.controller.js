@@ -16,13 +16,13 @@ exports.adminLogin = async (req, res, next) => {
     const nhanVienService = new NhanVienService(MongoDB.client);
     const admin = await nhanVienService.findAdminByPhone(dienthoai);
 
-    if (!admin || admin.daxoa) {
-      return next(new ApiError(401, 'Số điện thoại không tồn tại'));
+    if (!admin || admin.daxoa ? admin.daxoa : false) {
+      return res.send({ message: 'Account Not Found!', status: 401 });
     }
 
     const isMatch = await bcrypt.compare(matkhau, admin.matkhau);
     if (!isMatch) {
-      return next(new ApiError(401, 'Mật khẩu không đúng'));
+      return res.send({ message: 'Wrong password!', status: 401 });
     }
 
     const token = jwt.sign(
@@ -55,9 +55,7 @@ exports.findAll = async (req, res, next) => {
     if (dienthoai) {
       documents = await danhMucService.findAdminByPhone(dienthoai);
     } else {
-      documents = await danhMucService.find({
-        $or: [{ daxoa: false }, { daxoa: { $exists: false } }],
-      });
+      documents = await danhMucService.find({});
     }
 
     return res.send(documents);
