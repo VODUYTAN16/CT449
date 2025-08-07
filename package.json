@@ -19,7 +19,7 @@
     "dotenv": "^16.5.0",
     "fs": "^0.0.1-security",
     "jwt-decode": "^4.0.0",
-    "marked": "^16.0.0",
+    "marked": "^16.1.2",
     "mongoose": "^8.15.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",

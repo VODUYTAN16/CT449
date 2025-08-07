@@ -40,7 +40,7 @@
             <tr>
               <th width="50">No.</th>
               <th>Book Title</th>
-              <th>Reader</th>
+              <th v-if="currentUser.role == 'admin'">Reader</th>
               <th>Borrow Date</th>
               <th>Due Date</th>
               <th>Return Date</th>
@@ -57,7 +57,7 @@
             >
               <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
               <td>{{ item.sach_info?.tensach }}</td>
-              <td>
+              <td v-if="currentUser.role == 'admin'">
                 {{ item.docgia_info?.holot + ' ' + item.docgia_info?.ten }}
               </td>
               <td>{{ formatDate(item.ngaymuon) }}</td>

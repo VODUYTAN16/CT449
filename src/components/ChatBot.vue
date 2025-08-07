@@ -85,7 +85,20 @@ const onMessageWasSent = async (message) => {
         body: JSON.stringify({
           contents: [
             {
-              parts: [{ text: message.data.text }],
+              role: 'user',
+              parts: [
+                {
+                  text: `Bạn là một trợ lý ảo cho hệ thống đăng ký mượn sách. Hãy trả lời các câu hỏi một cách ngắn gọn, rõ ràng và chính xác.`,
+                },
+              ],
+            },
+            {
+              role: 'user',
+              parts: [
+                {
+                  text: message.data.text,
+                },
+              ],
             },
           ],
         }),
